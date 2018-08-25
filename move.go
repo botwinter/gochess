@@ -1,5 +1,13 @@
 package main
 
+type fullMove struct {
+	fromX int
+	fromY int
+	toX   int
+	toY   int
+	taken int
+}
+
 type move struct {
 	fromX int
 	fromY int

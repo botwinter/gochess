@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -157,6 +158,142 @@ func Test_isEnemyInDirection(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := isEnemyInDirection(tt.args.b, tt.args.kingCoords, tt.args.pieceCoords, tt.args.colour, tt.args.direction); got != tt.want {
 				t.Errorf("isEnemyInDirection() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_makeMove(t *testing.T) {
+	type args struct {
+		b *board
+		m *fullMove
+	}
+	tests := []struct {
+		name string
+		args args
+		want *board
+	}{
+		{
+			"test simple",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whitePawn, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), &fullMove{3, 1, 3, 2, empty},
+			}, newBoardWithPieces([][]int{
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, whitePawn, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			}),
+		},
+		{
+			"test take",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whiteRook, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackPawn, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), &fullMove{3, 1, 5, 1, empty},
+			}, newBoardWithPieces([][]int{
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, whiteRook, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := makeMove(tt.args.b, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("makeMove() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_unmakeMove(t *testing.T) {
+	type args struct {
+		b *board
+		m *fullMove
+	}
+	tests := []struct {
+		name string
+		args args
+		want *board
+	}{
+		{
+			"test simple",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whitePawn, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), &fullMove{3, 1, 3, 2, empty},
+			}, newBoardWithPieces([][]int{
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, whitePawn, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			}),
+		},
+		{
+			"test take",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, blackQueen, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), &fullMove{1, 0, 3, 2, whiteBishop},
+			}, newBoardWithPieces([][]int{
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{blackQueen, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, whiteBishop, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := unmakeMove(tt.args.b, tt.args.m); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("unmakeMove() = %v, want %v", got, tt.want)
 			}
 		})
 	}
