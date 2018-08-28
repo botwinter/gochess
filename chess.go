@@ -6,14 +6,14 @@ func main() {
 	fmt.Printf("chess!\n")
 
 	b := newBoardWithPieces([][]int{
-		[]int{empty, whitePawn, whiteRook, empty, empty, empty, empty, whitePawn},
-		[]int{empty, empty, blackRook, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, blackRook, empty},
-		[]int{empty, whitePawn, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, whiteKing, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, blackPawn, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
+		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
+		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
+		[]int{whiteQueen, whitePawn, empty, empty, empty, empty, blackPawn, blackQueen},
+		[]int{whiteKing, whitePawn, empty, empty, empty, empty, blackPawn, blackKing},
+		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
+		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
+		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 	})
 
 	moves := generateAllLegalMoves(b)
