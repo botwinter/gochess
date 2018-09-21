@@ -16,8 +16,13 @@ func main() {
 		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 	})
 
-	moves := generateAllLegalMoves(b)
+	moves := generateAllLegalMoves(b, white)
 	for _, m := range moves {
-		fmt.Printf("%d:%d %d:%d\n", m.fromX, m.fromY, m.toX, m.toY)
+		fmt.Printf("white move: %d:%d %d:%d\n", m.fromX, m.fromY, m.toX, m.toY)
+	}
+
+	moves = generateAllLegalMoves(b, black)
+	for _, m := range moves {
+		fmt.Printf("black move: %d:%d %d:%d\n", m.fromX, m.fromY, m.toX, m.toY)
 	}
 }

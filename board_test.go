@@ -166,7 +166,7 @@ func Test_isEnemyInDirection(t *testing.T) {
 func Test_makeMove(t *testing.T) {
 	type args struct {
 		b *board
-		m *fullMove
+		m *move
 	}
 	tests := []struct {
 		name string
@@ -185,7 +185,7 @@ func Test_makeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-				}), &fullMove{3, 1, 3, 2, empty},
+				}), &move{3, 1, 3, 2, empty},
 			}, newBoardWithPieces([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -209,7 +209,7 @@ func Test_makeMove(t *testing.T) {
 					[]int{empty, blackPawn, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-				}), &fullMove{3, 1, 5, 1, empty},
+				}), &move{3, 1, 5, 1, empty},
 			}, newBoardWithPieces([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -234,7 +234,7 @@ func Test_makeMove(t *testing.T) {
 func Test_unmakeMove(t *testing.T) {
 	type args struct {
 		b *board
-		m *fullMove
+		m *move
 	}
 	tests := []struct {
 		name string
@@ -253,7 +253,7 @@ func Test_unmakeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-				}), &fullMove{3, 1, 3, 2, empty},
+				}), &move{3, 1, 3, 2, empty},
 			}, newBoardWithPieces([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -277,7 +277,7 @@ func Test_unmakeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-				}), &fullMove{1, 0, 3, 2, whiteBishop},
+				}), &move{1, 0, 3, 2, whiteBishop},
 			}, newBoardWithPieces([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{blackQueen, empty, empty, empty, empty, empty, empty, empty},

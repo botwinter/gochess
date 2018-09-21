@@ -117,7 +117,7 @@ func isEnemyInDirection(b *board, kingCoords [2]int, pieceCoords [2]int, colour 
 }
 
 /* This function assumes the move is valid */
-func makeMove(b *board, m *fullMove) *board {
+func makeMove(b *board, m *move) *board {
 	m.taken = b.squares[m.toX][m.toY]
 	b.squares[m.toX][m.toY] = b.squares[m.fromX][m.fromY]
 	b.squares[m.fromX][m.fromY] = empty
@@ -125,7 +125,7 @@ func makeMove(b *board, m *fullMove) *board {
 	return b
 }
 
-func unmakeMove(b *board, m *fullMove) *board {
+func unmakeMove(b *board, m *move) *board {
 	b.squares[m.fromX][m.fromY] = b.squares[m.toX][m.toY]
 	b.squares[m.toX][m.toY] = m.taken
 

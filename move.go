@@ -1,18 +1,11 @@
 package main
 
-type fullMove struct {
-	fromX int
-	fromY int
-	toX   int
-	toY   int
-	taken int
-}
-
 type move struct {
 	fromX int
 	fromY int
 	toX   int
 	toY   int
+	taken int
 }
 
 func generatePawnMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int, moves []move) []move {
@@ -36,10 +29,10 @@ func generatePawnMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 	}
 	// Generate list of possible moves, ignoring bounds or checks
 	possibleMoves := [4]pawnMove{
-		{move{myCoords[0], myCoords[1], myCoords[0], myCoords[1] + 1}, "up1"},         // up 1 square
-		{move{myCoords[0], myCoords[1], myCoords[0], myCoords[1] + 2}, "up2"},         // up 2 squares
-		{move{myCoords[0], myCoords[1], myCoords[0] - 1, myCoords[1] + 1}, "upleft"},  // up and left
-		{move{myCoords[0], myCoords[1], myCoords[0] + 1, myCoords[1] + 1}, "upright"}, // up and right
+		{move{myCoords[0], myCoords[1], myCoords[0], myCoords[1] + 1, empty}, "up1"},         // up 1 square
+		{move{myCoords[0], myCoords[1], myCoords[0], myCoords[1] + 2, empty}, "up2"},         // up 2 squares
+		{move{myCoords[0], myCoords[1], myCoords[0] - 1, myCoords[1] + 1, empty}, "upleft"},  // up and left
+		{move{myCoords[0], myCoords[1], myCoords[0] + 1, myCoords[1] + 1, empty}, "upright"}, // up and right
 	}
 	// If black, reverse y axis
 	if colour == black {
@@ -204,12 +197,12 @@ func generateRookMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 			for xmove := myCoords[0] - 1; xmove >= 0 && xmove < 8; xmove-- {
 				// If this square is empty, it's a move and continue
 				if b.squares[xmove][myCoords[1]] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[xmove][myCoords[1]]) ||
 						colour == black && isWhite(b.squares[xmove][myCoords[1]]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 					}
 
 					break
@@ -220,12 +213,12 @@ func generateRookMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 			for xmove := myCoords[0] + 1; xmove >= 0 && xmove < 8; xmove++ {
 				// If this square is empty, it's a move and continue
 				if b.squares[xmove][myCoords[1]] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[xmove][myCoords[1]]) ||
 						colour == black && isWhite(b.squares[xmove][myCoords[1]]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 					}
 
 					break
@@ -249,12 +242,12 @@ func generateRookMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 			for ymove := myCoords[1] - 1; ymove >= 0 && ymove < 8; ymove-- {
 				// If this square is empty, it's a move and continue
 				if b.squares[myCoords[0]][ymove] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[myCoords[0]][ymove]) ||
 						colour == black && isWhite(b.squares[myCoords[0]][ymove]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 					}
 
 					break
@@ -265,12 +258,12 @@ func generateRookMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 			for ymove := myCoords[1] + 1; ymove >= 0 && ymove < 8; ymove++ {
 				// If this square is empty, it's a move and continue
 				if b.squares[myCoords[0]][ymove] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[myCoords[0]][ymove]) ||
 						colour == black && isWhite(b.squares[myCoords[0]][ymove]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 					}
 
 					break
@@ -348,14 +341,14 @@ func generateKnightMoves(b *board, myCoords [2]int, kingCoords [2]int, colour in
 	// Now we've established no danger of moving into check, so can check possible moves
 
 	possibleMoves := [8]move{
-		{myCoords[0], myCoords[1], myCoords[0] - 1, myCoords[1] - 2},
-		{myCoords[0], myCoords[1], myCoords[0] - 2, myCoords[1] - 1},
-		{myCoords[0], myCoords[1], myCoords[0] - 2, myCoords[1] + 1},
-		{myCoords[0], myCoords[1], myCoords[0] - 1, myCoords[1] + 2},
-		{myCoords[0], myCoords[1], myCoords[0] + 1, myCoords[1] + 2},
-		{myCoords[0], myCoords[1], myCoords[0] + 2, myCoords[1] + 1},
-		{myCoords[0], myCoords[1], myCoords[0] + 2, myCoords[1] - 1},
-		{myCoords[0], myCoords[1], myCoords[0] + 1, myCoords[1] - 2},
+		{myCoords[0], myCoords[1], myCoords[0] - 1, myCoords[1] - 2, empty},
+		{myCoords[0], myCoords[1], myCoords[0] - 2, myCoords[1] - 1, empty},
+		{myCoords[0], myCoords[1], myCoords[0] - 2, myCoords[1] + 1, empty},
+		{myCoords[0], myCoords[1], myCoords[0] - 1, myCoords[1] + 2, empty},
+		{myCoords[0], myCoords[1], myCoords[0] + 1, myCoords[1] + 2, empty},
+		{myCoords[0], myCoords[1], myCoords[0] + 2, myCoords[1] + 1, empty},
+		{myCoords[0], myCoords[1], myCoords[0] + 2, myCoords[1] - 1, empty},
+		{myCoords[0], myCoords[1], myCoords[0] + 1, myCoords[1] - 2, empty},
 	}
 
 	for _, v := range possibleMoves {
@@ -452,12 +445,12 @@ func generateBishopMoves(b *board, myCoords [2]int, kingCoords [2]int, colour in
 		for xcoord, ycoord := myCoords[0]-1, myCoords[1]-1; xcoord >= 0 && ycoord >= 0; xcoord, ycoord = xcoord-1, ycoord-1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -470,12 +463,12 @@ func generateBishopMoves(b *board, myCoords [2]int, kingCoords [2]int, colour in
 		for xcoord, ycoord := myCoords[0]+1, myCoords[1]-1; xcoord < 8 && ycoord >= 0; xcoord, ycoord = xcoord+1, ycoord-1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -488,12 +481,12 @@ func generateBishopMoves(b *board, myCoords [2]int, kingCoords [2]int, colour in
 		for xcoord, ycoord := myCoords[0]-1, myCoords[1]+1; xcoord >= 0 && ycoord < 8; xcoord, ycoord = xcoord-1, ycoord+1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -506,12 +499,12 @@ func generateBishopMoves(b *board, myCoords [2]int, kingCoords [2]int, colour in
 		for xcoord, ycoord := myCoords[0]+1, myCoords[1]+1; xcoord < 8 && ycoord < 8; xcoord, ycoord = xcoord+1, ycoord+1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -537,12 +530,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 			for xmove := myCoords[0] - 1; xmove >= 0 && xmove < 8; xmove-- {
 				// If this square is empty, it's a move and continue
 				if b.squares[xmove][myCoords[1]] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[xmove][myCoords[1]]) ||
 						colour == black && isWhite(b.squares[xmove][myCoords[1]]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 					}
 
 					break
@@ -553,12 +546,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 			for xmove := myCoords[0] + 1; xmove >= 0 && xmove < 8; xmove++ {
 				// If this square is empty, it's a move and continue
 				if b.squares[xmove][myCoords[1]] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+					moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[xmove][myCoords[1]]) ||
 						colour == black && isWhite(b.squares[xmove][myCoords[1]]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1]})
+						moves = append(moves, move{myCoords[0], myCoords[1], xmove, myCoords[1], empty})
 					}
 
 					break
@@ -583,12 +576,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 			for ymove := myCoords[1] - 1; ymove >= 0 && ymove < 8; ymove-- {
 				// If this square is empty, it's a move and continue
 				if b.squares[myCoords[0]][ymove] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[myCoords[0]][ymove]) ||
 						colour == black && isWhite(b.squares[myCoords[0]][ymove]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 					}
 
 					break
@@ -599,12 +592,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 			for ymove := myCoords[1] + 1; ymove >= 0 && ymove < 8; ymove++ {
 				// If this square is empty, it's a move and continue
 				if b.squares[myCoords[0]][ymove] == empty {
-					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+					moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 				} else {
 					// If this square is an enemy piece, it's a move
 					if colour == white && isBlack(b.squares[myCoords[0]][ymove]) ||
 						colour == black && isWhite(b.squares[myCoords[0]][ymove]) {
-						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove})
+						moves = append(moves, move{myCoords[0], myCoords[1], myCoords[0], ymove, empty})
 					}
 
 					break
@@ -690,12 +683,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 		for xcoord, ycoord := myCoords[0]-1, myCoords[1]-1; xcoord >= 0 && ycoord >= 0; xcoord, ycoord = xcoord-1, ycoord-1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -708,12 +701,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 		for xcoord, ycoord := myCoords[0]+1, myCoords[1]-1; xcoord < 8 && ycoord >= 0; xcoord, ycoord = xcoord+1, ycoord-1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -726,12 +719,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 		for xcoord, ycoord := myCoords[0]-1, myCoords[1]+1; xcoord >= 0 && ycoord < 8; xcoord, ycoord = xcoord-1, ycoord+1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -744,12 +737,12 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 		for xcoord, ycoord := myCoords[0]+1, myCoords[1]+1; xcoord < 8 && ycoord < 8; xcoord, ycoord = xcoord+1, ycoord+1 {
 			// If this square is empty, it's a move and continue
 			if b.squares[xcoord][ycoord] == empty {
-				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+				moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 			} else {
 				// If this square is an enemy piece, it's a move
 				if colour == white && isBlack(b.squares[xcoord][ycoord]) ||
 					colour == black && isWhite(b.squares[xcoord][ycoord]) {
-					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord})
+					moves = append(moves, move{myCoords[0], myCoords[1], xcoord, ycoord, empty})
 				}
 
 				break
@@ -765,14 +758,14 @@ func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []
 	ycoord := kingCoords[1]
 
 	possibleMoves := [8]move{
-		move{xcoord, ycoord, xcoord - 1, ycoord},
-		move{xcoord, ycoord, xcoord - 1, ycoord + 1},
-		move{xcoord, ycoord, xcoord, ycoord + 1},
-		move{xcoord, ycoord, xcoord + 1, ycoord + 1},
-		move{xcoord, ycoord, xcoord + 1, ycoord},
-		move{xcoord, ycoord, xcoord + 1, ycoord - 1},
-		move{xcoord, ycoord, xcoord, ycoord - 1},
-		move{xcoord, ycoord, xcoord - 1, ycoord - 1},
+		move{xcoord, ycoord, xcoord - 1, ycoord, empty},
+		move{xcoord, ycoord, xcoord - 1, ycoord + 1, empty},
+		move{xcoord, ycoord, xcoord, ycoord + 1, empty},
+		move{xcoord, ycoord, xcoord + 1, ycoord + 1, empty},
+		move{xcoord, ycoord, xcoord + 1, ycoord, empty},
+		move{xcoord, ycoord, xcoord + 1, ycoord - 1, empty},
+		move{xcoord, ycoord, xcoord, ycoord - 1, empty},
+		move{xcoord, ycoord, xcoord - 1, ycoord - 1, empty},
 	}
 
 	for _, move := range possibleMoves {
@@ -833,7 +826,7 @@ func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []
 			}
 		}
 
-		if move.toX+2 >= 0 {
+		if move.toX+2 < 8 {
 			if move.toY-1 >= 0 {
 				if (colour == white && b.squares[move.toX+2][move.toY-1] == blackKnight) || (colour == black && b.squares[move.toX+2][move.toY-1] == whiteKnight) {
 					knightFound = true
@@ -957,7 +950,7 @@ result in check). Assumptions:
 - Not currently in check
 - Kings exist
 */
-func generateAllLegalMoves(b *board) []move {
+func generateAllLegalMoves(b *board, colour int) []move {
 	ret := make([]move, 0, 128)
 
 	// Store location of both kings for reference
@@ -993,29 +986,53 @@ func generateAllLegalMoves(b *board) []move {
 			case empty:
 				continue
 			case whiteRook:
-				ret = generateRookMoves(b, currentCoords, whiteKingCoords, white, ret)
+				if colour == white {
+					ret = generateRookMoves(b, currentCoords, whiteKingCoords, white, ret)
+				}
 			case whiteKnight:
-				ret = generateKnightMoves(b, currentCoords, whiteKingCoords, white, ret)
+				if colour == white {
+					ret = generateKnightMoves(b, currentCoords, whiteKingCoords, white, ret)
+				}
 			case whiteBishop:
-				ret = generateBishopMoves(b, currentCoords, whiteKingCoords, white, ret)
+				if colour == white {
+					ret = generateBishopMoves(b, currentCoords, whiteKingCoords, white, ret)
+				}
 			case whiteQueen:
-				ret = generateQueenMoves(b, currentCoords, whiteKingCoords, white, ret)
+				if colour == white {
+					ret = generateQueenMoves(b, currentCoords, whiteKingCoords, white, ret)
+				}
 			case whiteKing:
-				ret = generateKingMoves(b, whiteKingCoords, white, ret)
+				if colour == white {
+					ret = generateKingMoves(b, whiteKingCoords, white, ret)
+				}
 			case whitePawn:
-				ret = generatePawnMoves(b, currentCoords, blackKingCoords, white, ret)
+				if colour == white {
+					ret = generatePawnMoves(b, currentCoords, blackKingCoords, white, ret)
+				}
 			case blackPawn:
-				ret = generatePawnMoves(b, currentCoords, blackKingCoords, black, ret)
+				if colour == black {
+					ret = generatePawnMoves(b, currentCoords, blackKingCoords, black, ret)
+				}
 			case blackRook:
-				ret = generateRookMoves(b, currentCoords, blackKingCoords, black, ret)
+				if colour == black {
+					ret = generateRookMoves(b, currentCoords, blackKingCoords, black, ret)
+				}
 			case blackKnight:
-				ret = generateKnightMoves(b, currentCoords, blackKingCoords, black, ret)
+				if colour == black {
+					ret = generateKnightMoves(b, currentCoords, blackKingCoords, black, ret)
+				}
 			case blackBishop:
-				ret = generateBishopMoves(b, currentCoords, blackKingCoords, black, ret)
+				if colour == black {
+					ret = generateBishopMoves(b, currentCoords, blackKingCoords, black, ret)
+				}
 			case blackKing:
-				ret = generateKingMoves(b, blackKingCoords, black, ret)
+				if colour == black {
+					ret = generateKingMoves(b, blackKingCoords, black, ret)
+				}
 			case blackQueen:
-				ret = generateQueenMoves(b, currentCoords, blackKingCoords, black, ret)
+				if colour == black {
+					ret = generateQueenMoves(b, currentCoords, blackKingCoords, black, ret)
+				}
 			}
 		}
 	}
