@@ -16,6 +16,19 @@ func newBoardWithPieces(pieces [][]int) *board {
 	return &b
 }
 
+func newDefaultBoard() *board {
+	return newBoardWithPieces([][]int{
+		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
+		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
+		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
+		[]int{whiteQueen, whitePawn, empty, empty, empty, empty, blackPawn, blackQueen},
+		[]int{whiteKing, whitePawn, empty, empty, empty, empty, blackPawn, blackKing},
+		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
+		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
+		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
+	})
+}
+
 /* This function looks along a specified diagonal, and returns true if the current piece is the only
 thing standing between the king and an enemy bishop or queen.
 If pieceCoords[0] is -1, then this function assumes the king is the current piece */

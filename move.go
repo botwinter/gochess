@@ -963,9 +963,11 @@ func generateAllLegalMoves(b *board, colour int) []move {
 			if sq == whiteKing {
 				whiteKingCoords[0] = x
 				whiteKingCoords[1] = y
+				whiteKingFound = true
 			} else if sq == blackKing {
 				blackKingCoords[0] = x
 				blackKingCoords[1] = y
+				blackKingFound = true
 			}
 			if whiteKingFound && blackKingFound {
 				break
@@ -974,6 +976,11 @@ func generateAllLegalMoves(b *board, colour int) []move {
 		if whiteKingFound && blackKingFound {
 			break
 		}
+	}
+
+	// If one of the kings isn't found, game over
+	if !whiteKingFound || !blackKingFound {
+		return ret
 	}
 
 	// Iterate over all squares on board

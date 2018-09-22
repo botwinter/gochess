@@ -8,6 +8,10 @@ func search(b *board, depth int, origDepth int, colour int, bestMove *move) int 
 	max := -999
 	score := 0
 	moves := generateAllLegalMoves(b, colour)
+	if len(moves) == 0 {
+		return evaluateBoard(b, colour)
+	}
+
 	for _, move := range moves {
 		// Make the possible move
 		makeMove(b, &move)
@@ -31,7 +35,7 @@ func search(b *board, depth int, origDepth int, colour int, bestMove *move) int 
 func findBestMove(b *board, colour int) move {
 	bestMove := move{0, 0, 0, 0, 0}
 
-	search(b, 2, 2, colour, &bestMove)
+	search(b, 4, 4, colour, &bestMove)
 
 	return bestMove
 }
