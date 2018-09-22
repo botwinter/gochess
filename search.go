@@ -1,5 +1,10 @@
 package main
 
+import (
+	"fmt"
+	"os"
+)
+
 func search(b *board, depth int, origDepth int, colour int, bestMove *move) int {
 	if depth == 0 {
 		return evaluateBoard(b, colour)
@@ -11,6 +16,15 @@ func search(b *board, depth int, origDepth int, colour int, bestMove *move) int 
 	if len(moves) == 0 {
 		return evaluateBoard(b, colour)
 	}
+
+	err := renderBoard(b)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	err = renderStatusLine(fmt.Sprintf("Starting search at depth %d", depth))
+	handleKeyEvent()
 
 	for _, move := range moves {
 		// Make the possible move

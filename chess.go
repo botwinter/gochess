@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/nsf/termbox-go"
 )
@@ -15,7 +16,8 @@ func main() {
 	err := renderBoard(b)
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	handleKeyEvent()
+	findBestMove(b, white)
 }
