@@ -29,6 +29,19 @@ func newDefaultBoard() *board {
 	})
 }
 
+func newDebugBoard() *board {
+	return newBoardWithPieces([][]int{
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{whiteKing, empty, whiteQueen, empty, blackQueen, empty, empty, blackKing},
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+	})
+}
+
 /* This function looks along a specified diagonal, and returns true if the current piece is the only
 thing standing between the king and an enemy bishop or queen.
 If pieceCoords[0] is -1, then this function assumes the king is the current piece */

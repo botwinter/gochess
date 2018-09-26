@@ -1,11 +1,19 @@
 package main
 
+import (
+	"fmt"
+)
+
 type move struct {
 	fromX int
 	fromY int
 	toX   int
 	toY   int
 	taken int
+}
+
+func (m *move) toString() string {
+	return fmt.Sprintf("[%d,%d] -> [%d,%d]", m.fromX, m.fromY, m.toX, m.toY)
 }
 
 func generatePawnMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int, moves []move) []move {

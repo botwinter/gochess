@@ -11,7 +11,7 @@ func main() {
 	termbox.Init()
 	defer termbox.Close()
 
-	b := newDefaultBoard()
+	b := newDebugBoard()
 
 	err := renderBoard(b)
 	if err != nil {

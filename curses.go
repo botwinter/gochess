@@ -1,10 +1,16 @@
 package main
 
-import "github.com/nsf/termbox-go"
+import (
+	"os"
+
+	"github.com/nsf/termbox-go"
+)
 
 const (
 	squareXSize = 5
 	squareYSize = 3
+	statusYPos  = 8*squareYSize + 5
+	scoreYPos   = statusYPos + 1
 )
 
 func renderSquare(x int, y int, square int) {
@@ -80,10 +86,16 @@ func renderBoard(b *board) error {
 }
 
 func renderStatusLine(line string) error {
-	statusY := 8*squareYSize + 5
+	return renderTextLine(statusYPos, line)
+}
 
+func renderScoreLine(line string) error {
+	return renderTextLine(scoreYPos, line)
+}
+
+func renderTextLine(ypos int, line string) error {
 	for pos, char := range line {
-		termbox.SetCell(pos, statusY, char, termbox.ColorDefault, termbox.ColorDefault)
+		termbox.SetCell(pos, ypos, char, termbox.ColorDefault, termbox.ColorDefault)
 	}
 	return termbox.Flush()
 }
@@ -94,7 +106,7 @@ func handleKeyEvent() {
 		case termbox.EventKey:
 			switch ev.Key {
 			case termbox.KeyEsc:
-				return
+				os.Exit(0)
 			case termbox.KeyArrowLeft:
 				return
 			case termbox.KeyArrowRight:
