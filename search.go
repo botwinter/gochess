@@ -17,10 +17,12 @@ func search(b *board, depth int, origDepth int, colour int, bestMove *move, move
 		return evaluateBoard(b, colour)
 	}
 
-	err := renderBoard(b)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if cursesEnabled {
+		err := renderBoard(b)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 
 	for _, move := range moves {
@@ -37,23 +39,27 @@ func search(b *board, depth int, origDepth int, colour int, bestMove *move, move
 				oldBestMove := *bestMove
 				*bestMove = move
 
-				err = renderBoard(b)
-				err = renderStatusLine(fmt.Sprintf("Updated best move! Old best move: %s    New best move: %s with score %d", oldBestMove.toString(), bestMove.toString(), max))
-				if err != nil {
-					fmt.Println(err)
-					os.Exit(1)
+				if cursesEnabled {
+					err := renderBoard(b)
+					err = renderStatusLine(fmt.Sprintf("Updated best move! Old best move: %s    New best move: %s with score %d", oldBestMove.toString(), bestMove.toString(), max))
+					if err != nil {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					handleKeyEvent()
 				}
-				handleKeyEvent()
 			}
 		} else {
 			if depth == origDepth {
-				err = renderBoard(b)
-				err = renderStatusLine(fmt.Sprintf("Move %s has score: %d    not better than current best move %s with score %d", move.toString(), score, bestMove.toString(), max))
-				if err != nil {
-					fmt.Println(err)
-					os.Exit(1)
+				if cursesEnabled {
+					err := renderBoard(b)
+					err = renderStatusLine(fmt.Sprintf("Move %s has score: %d    not better than current best move %s with score %d", move.toString(), score, bestMove.toString(), max))
+					if err != nil {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					handleKeyEvent()
 				}
-				handleKeyEvent()
 			}
 		}
 		unmakeMove(b, &move)
@@ -68,12 +74,14 @@ func findBestMove(b *board, colour int) move {
 	moveStack := make([]move, depth)
 	search(b, depth, depth, colour, &bestMove, &moveStack)
 
-	err := renderBoard(b)
-	err = renderStatusLine(fmt.Sprintf("Found best move: %s", bestMove.toString()))
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+	if cursesEnabled {
+		err := renderBoard(b)
+		err = renderStatusLine(fmt.Sprintf("Found best move: %s", bestMove.toString()))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		handleKeyEvent()
 	}
-	handleKeyEvent()
 	return bestMove
 }
