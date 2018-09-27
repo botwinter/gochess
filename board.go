@@ -157,3 +157,21 @@ func unmakeMove(b *board, m *move) *board {
 
 	return b
 }
+
+// Keep this in a separate function so we only do it for user-provided moves
+func validMove(b *board, m *move, colour int) bool {
+	validMoves := generateAllLegalMoves(b, colour)
+
+	// Basic checks
+	if m.fromX < 0 || m.fromX > 7 || m.fromY < 0 || m.fromY > 7 || m.toX < 0 || m.toX > 7 || m.toY < 0 || m.toY > 7 {
+		return false
+	}
+
+	for _, move := range validMoves {
+		if m.fromX == move.fromX && m.fromY == move.fromY && m.toX == move.toX && m.toY == move.toY {
+			return true
+		}
+	}
+
+	return false
+}
