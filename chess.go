@@ -11,7 +11,7 @@ import (
 var cursesEnabled bool
 
 func main() {
-	b := newDebugBoard()
+	b := newDefaultBoard()
 
 	cursesEnabled = true
 

@@ -41,18 +41,19 @@ func search(b *board, depth int, origDepth int, colour int, alpha int, beta int,
 
 			// If we are in the root search call and this is the new best score, update bestMove
 			if depth == origDepth {
-				oldBestMove := *bestMove
 				*bestMove = move
-
-				if cursesEnabled {
-					err := renderBoard(b)
-					err = renderStatusLine(fmt.Sprintf("Updated best move! Old best move: %s    New best move: %s with score %d", oldBestMove.toString(), bestMove.toString(), alpha))
-					if err != nil {
-						fmt.Println(err)
-						os.Exit(1)
+				/*
+					oldBestMove := *bestMove
+					if cursesEnabled {
+						err := renderBoard(b)
+						err = renderStatusLine(fmt.Sprintf("Updated best move! Old best move: %s    New best move: %s with score %d", oldBestMove.toString(), bestMove.toString(), alpha))
+						if err != nil {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						handleKeyEvent()
 					}
-					handleKeyEvent()
-				}
+				*/
 			}
 
 			if score >= beta {
