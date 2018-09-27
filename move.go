@@ -953,6 +953,125 @@ func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []
 	return moves
 }
 
+/* This function returns true if the specified colour's king is in Check. */
+func inCheck(b *board, colour int) bool {
+	// Find king TODO cache this
+	kingCoords := [2]int{0, 0}
+	kingFound := false
+	for x, col := range b.squares {
+		for y, sq := range col {
+			if (sq == whiteKing && colour == white) || (sq == blackKing && colour == black) {
+				kingCoords[0] = x
+				kingCoords[1] = y
+				kingFound = true
+			}
+			if kingFound {
+				break
+			}
+		}
+		if kingFound {
+			break
+		}
+	}
+
+	// Check for rook/queen on row/col
+	if isEnemyInDirection(b, kingCoords, [2]int{-1, -1}, colour, left) || isEnemyInDirection(b, kingCoords, [2]int{-1, -1}, colour, right) ||
+		isEnemyInDirection(b, kingCoords, [2]int{-1, -1}, colour, up) || isEnemyInDirection(b, kingCoords, [2]int{-1, -1}, colour, down) {
+		return true
+	}
+
+	// Next, check for enemy in diagonal
+	if isEnemyOnDiagonal(b, kingCoords, [2]int{-1, -1}, colour, bottomLeftDiagonal) || isEnemyOnDiagonal(b, kingCoords, [2]int{-1, -1}, colour, topLeftDiagonal) ||
+		isEnemyOnDiagonal(b, kingCoords, [2]int{-1, -1}, colour, topRightDiagonal) || isEnemyOnDiagonal(b, kingCoords, [2]int{-1, -1}, colour, bottomRightDiagonal) {
+		return true
+	}
+
+	// Next, check for knights
+	if kingCoords[0]-2 >= 0 {
+		if kingCoords[1]-1 >= 0 {
+			if (colour == white && b.squares[kingCoords[0]-2][kingCoords[1]-1] == blackKnight) || (colour == black && b.squares[kingCoords[0]-2][kingCoords[1]-1] == whiteKnight) {
+				return true
+			}
+		}
+		if kingCoords[1]+1 < 8 {
+			if (colour == white && b.squares[kingCoords[0]-2][kingCoords[1]+1] == blackKnight) || (colour == black && b.squares[kingCoords[0]-2][kingCoords[1]+1] == whiteKnight) {
+				return true
+			}
+		}
+	}
+
+	if kingCoords[0]-1 >= 0 {
+		if kingCoords[1]-2 >= 0 {
+			if (colour == white && b.squares[kingCoords[0]-1][kingCoords[1]-2] == blackKnight) || (colour == black && b.squares[kingCoords[0]-1][kingCoords[1]-2] == whiteKnight) {
+				return true
+			}
+		}
+		if kingCoords[1]+2 < 8 {
+			if (colour == white && b.squares[kingCoords[0]-1][kingCoords[1]+2] == blackKnight) || (colour == black && b.squares[kingCoords[0]-1][kingCoords[1]+2] == whiteKnight) {
+				return true
+			}
+		}
+	}
+
+	if kingCoords[0]+2 < 8 {
+		if kingCoords[1]-1 >= 0 {
+			if (colour == white && b.squares[kingCoords[0]+2][kingCoords[1]-1] == blackKnight) || (colour == black && b.squares[kingCoords[0]+2][kingCoords[1]-1] == whiteKnight) {
+				return true
+			}
+		}
+		if kingCoords[1]+1 < 8 {
+			if (colour == white && b.squares[kingCoords[0]+2][kingCoords[1]+1] == blackKnight) || (colour == black && b.squares[kingCoords[0]+2][kingCoords[1]+1] == whiteKnight) {
+				return true
+			}
+		}
+	}
+
+	if kingCoords[0]+1 >= 0 {
+		if kingCoords[1]-2 >= 0 {
+			if (colour == white && b.squares[kingCoords[0]+1][kingCoords[1]-2] == blackKnight) || (colour == black && b.squares[kingCoords[0]+1][kingCoords[1]-2] == whiteKnight) {
+				return true
+			}
+		}
+		if kingCoords[1]+2 < 8 {
+			if (colour == white && b.squares[kingCoords[0]+1][kingCoords[1]+2] == blackKnight) || (colour == black && b.squares[kingCoords[0]+1][kingCoords[1]+2] == whiteKnight) {
+				return true
+			}
+		}
+	}
+
+	// Now pawns...
+	if colour == white {
+		if (kingCoords[0]-1 > 0 && kingCoords[1] < 8 && b.squares[kingCoords[0]-1][kingCoords[1]+1] == blackPawn) || (kingCoords[0]+1 < 8 && kingCoords[1] < 8 && b.squares[kingCoords[0]+1][kingCoords[1]+1] == blackPawn) {
+			return true
+		}
+	} else {
+		if (kingCoords[0]-1 >= 0 && kingCoords[1]-1 >= 0 && b.squares[kingCoords[0]-1][kingCoords[1]-1] == whitePawn) || (kingCoords[0]+1 >= 0 && kingCoords[1]-1 >= 0 && b.squares[kingCoords[0]+1][kingCoords[1]-1] == whitePawn) {
+			return true
+		}
+	}
+
+	return false
+}
+
+/* This function will return a list of legal moves if we are currently in check. Assumptions:
+- Kings exist
+*/
+func generateAllLegalMovesInCheck(b *board, colour int) []move {
+	// TODO this is almost definitely not the most efficient way to do this
+	ret := make([]move, 0, 128)
+	moves := generateAllLegalMoves(b, colour)
+
+	for _, move := range moves {
+		makeMove(b, &move)
+		if !inCheck(b, colour) {
+			ret = append(ret, move)
+		}
+		unmakeMove(b, &move)
+	}
+
+	return ret
+}
+
 /* This function will return a list of legal moves for both sides (that is, moves which will not
 result in check). Assumptions:
 - Not currently in check

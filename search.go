@@ -13,7 +13,15 @@ func search(b *board, depth int, origDepth int, colour int, alpha int, beta int,
 	}
 
 	score := 0
-	moves := generateAllLegalMoves(b, colour)
+
+	// Am I in check?
+	moves := []move{}
+	if inCheck(b, colour) {
+		moves = generateAllLegalMovesInCheck(b, colour)
+	} else {
+		moves = generateAllLegalMoves(b, colour)
+	}
+
 	if len(moves) == 0 {
 		return evaluateBoard(b, colour)
 	}

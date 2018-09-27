@@ -681,3 +681,384 @@ func Test_generateKingMoves(t *testing.T) {
 		})
 	}
 }
+
+func Test_inCheck(t *testing.T) {
+	type args struct {
+		b      *board
+		colour int
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			"test empty",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			false,
+		},
+		{
+			"test queen",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whiteKing, empty, blackQueen, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			true,
+		},
+		{
+			"test queen blocked",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whiteKing, whitePawn, blackQueen, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			false,
+		},
+		{
+			"test bishop",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, whiteBishop, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, blackKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), black,
+			},
+			true,
+		},
+		{
+			"test bishop blocked",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, whiteBishop, empty, empty, empty},
+					[]int{empty, empty, empty, whiteRook, empty, empty, empty, empty},
+					[]int{empty, empty, blackKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), black,
+			},
+			false,
+		},
+		{
+			"test knight",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, blackKnight, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			true,
+		},
+		{
+			"test knight adjacent",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, blackKnight, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			false,
+		},
+		{
+			"test rook",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackKing, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whiteRook, empty, empty, empty, empty, empty, empty},
+				}), black,
+			},
+			true,
+		},
+		{
+			"test rook blocked",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackKing, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackBishop, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whiteRook, empty, empty, empty, empty, empty, empty},
+				}), black,
+			},
+			false,
+		},
+		{
+			"test pawn",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
+					[]int{empty, whiteKing, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			true,
+		},
+		{
+			"test pawn in front",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whiteKing, blackPawn, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			false,
+		},
+		{
+			"test pawn behind",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackPawn, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			false,
+		},
+		{
+			"test other king",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, whiteKing, empty, blackKing, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := inCheck(tt.args.b, tt.args.colour); got != tt.want {
+				t.Errorf("inCheck() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_generateAllLegalMovesInCheck(t *testing.T) {
+	type args struct {
+		b      *board
+		colour int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []move
+	}{
+		{
+			"test basic",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, blackQueen},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			[]move{
+				move{4, 2, 3, 2, empty},
+				move{4, 2, 3, 3, empty},
+				move{4, 2, 5, 3, empty},
+				move{4, 2, 5, 2, empty},
+				move{4, 2, 5, 1, empty},
+				move{4, 2, 3, 1, empty},
+			},
+		},
+		{
+			"test queen and rook",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, blackRook, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, blackQueen},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			[]move{
+				move{4, 2, 3, 3, empty},
+				move{4, 2, 5, 3, empty},
+				move{4, 2, 5, 1, empty},
+				move{4, 2, 3, 1, empty},
+			},
+		},
+		{
+			"test checkmate",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackQueen, empty, empty, empty, empty, empty, empty},
+					[]int{empty, blackRook, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			[]move{},
+		},
+		{
+			"test bishop",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, blackBishop, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			[]move{
+				move{4, 2, 3, 2, empty},
+				move{4, 2, 4, 3, empty},
+				move{4, 2, 5, 3, empty},
+				move{4, 2, 5, 2, empty},
+				move{4, 2, 4, 1, empty},
+				move{4, 2, 3, 1, empty},
+			},
+		},
+		{
+			"test bishop adjacent",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, blackBishop, empty, empty, empty, blackKing},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			[]move{
+				move{4, 2, 3, 2, empty},
+				move{4, 2, 3, 3, blackBishop},
+				move{4, 2, 4, 3, empty},
+				move{4, 2, 5, 3, empty},
+				move{4, 2, 5, 2, empty},
+				move{4, 2, 4, 1, empty},
+				move{4, 2, 3, 1, empty},
+			},
+		},
+		{
+			"test multiple pieces taking checking piece",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whiteKnight, empty, empty, empty, empty, empty, empty},
+					[]int{empty, whiteRook, empty, blackKnight, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			[]move{
+				move{1, 1, 2, 3, blackKnight},
+				move{2, 1, 2, 3, blackKnight},
+				move{4, 2, 3, 2, empty},
+				move{4, 2, 3, 3, empty},
+				move{4, 2, 4, 3, empty},
+				move{4, 2, 5, 3, empty},
+				move{4, 2, 5, 2, empty},
+				move{4, 2, 5, 1, empty},
+				move{4, 2, 4, 1, empty},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := generateAllLegalMovesInCheck(tt.args.b, tt.args.colour); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("generateAllLegalMovesInCheck() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
