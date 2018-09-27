@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 
@@ -14,22 +13,32 @@ var cursesEnabled bool
 func main() {
 	b := newDebugBoard()
 
-	// CLI flags
-	cursesPtr := flag.Bool("curses", true, "bool")
-	flag.Parse()
+	cursesEnabled = true
 
-	cursesEnabled = *cursesPtr
+	termbox.Init()
+	defer termbox.Close()
 
-	if cursesEnabled {
-		termbox.Init()
-		defer termbox.Close()
-
-		err := renderBoard(b)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
+	err := renderBoard(b)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	findBestMove(b, white)
+	// Play the game - player is always white
+	for {
+		// Wait for player move
+		move := handleMoveInput(b)
+
+		// Make player move
+		makeMove(b, &move)
+
+		// Find AI move
+		bestAIMove := findBestMove(b, black)
+
+		// Make AI move
+		makeMove(b, &bestAIMove)
+
+		// Update board view
+		renderBoard(b)
+	}
 }
