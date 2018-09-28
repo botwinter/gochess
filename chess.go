@@ -12,13 +12,14 @@ var cursesEnabled bool
 
 func main() {
 	b := newDefaultBoard()
+	c := initCursesBoard()
 
 	cursesEnabled = true
 
 	termbox.Init()
 	defer termbox.Close()
 
-	err := renderBoard(b)
+	err := renderBoard(c, b)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -27,18 +28,20 @@ func main() {
 	// Play the game - player is always white
 	for {
 		// Wait for player move
-		move := handleMoveInput(b)
+		move := handleMoveInput(c, b)
 
 		// Make player move
-		makeMove(b, &move)
+		makeMove(b, move)
 
 		// Find AI move
+		renderBoard(c, b)
+		renderStatusLine(c, "AI is thinking...")
 		bestAIMove := findBestMove(b, black)
 
 		// Make AI move
 		makeMove(b, &bestAIMove)
 
 		// Update board view
-		renderBoard(b)
+		renderBoard(c, b)
 	}
 }

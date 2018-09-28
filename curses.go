@@ -1,15 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"unicode"
 
 	"github.com/nsf/termbox-go"
 )
 
-var termWidth int
-var termHeight int
+const (
+	start = iota
+	userMoveFrom
+	userMoveTo
+	aiMove
+)
 
 const (
 	squareXSize = 5
@@ -19,15 +21,45 @@ const (
 	moveYPos    = statusYPos + 2
 )
 
-func renderSquare(x int, y int, square int) {
+type cursesBoard struct {
+	termWidth  int
+	termHeight int
+
+	state int
+
+	cursorXPos int
+	cursorYPos int
+
+	move *move
+}
+
+func initCursesBoard() *cursesBoard {
+	c := cursesBoard{}
+
+	c.state = start
+	c.termWidth, c.termHeight = termbox.Size()
+	c.move = &move{0, 0, 0, 0, empty}
+
+	return &c
+}
+
+func renderSquare(c *cursesBoard, x int, y int, square int) {
 	// Get square colour based on coord
-	squareBgColour := termbox.ColorBlack
+	squareBgColour := termbox.ColorBlue
 	if (x+y)%2 != 0 {
-		squareBgColour = termbox.ColorWhite
+		squareBgColour = termbox.ColorYellow
+	}
+
+	if (c.state == userMoveFrom || c.state == userMoveTo) && x == c.cursorXPos && y == c.cursorYPos {
+		squareBgColour = termbox.ColorCyan
+	}
+
+	if c.state == userMoveTo && x == c.move.fromX && y == c.move.fromY {
+		squareBgColour = termbox.ColorRed
 	}
 
 	squarePiece := ' '
-	squareFgColour := termbox.ColorYellow | termbox.AttrBold
+	squareFgColour := termbox.ColorWhite | termbox.AttrBold
 
 	switch square {
 	case whiteRook:
@@ -44,22 +76,22 @@ func renderSquare(x int, y int, square int) {
 		squarePiece = 'P'
 	case blackPawn:
 		squarePiece = 'P'
-		squareFgColour = termbox.ColorRed | termbox.AttrBold
+		squareFgColour = termbox.ColorBlack | termbox.AttrBold
 	case blackRook:
 		squarePiece = 'R'
-		squareFgColour = termbox.ColorRed | termbox.AttrBold
+		squareFgColour = termbox.ColorBlack | termbox.AttrBold
 	case blackKnight:
 		squarePiece = 'N'
-		squareFgColour = termbox.ColorRed | termbox.AttrBold
+		squareFgColour = termbox.ColorBlack | termbox.AttrBold
 	case blackBishop:
 		squarePiece = 'B'
-		squareFgColour = termbox.ColorRed | termbox.AttrBold
+		squareFgColour = termbox.ColorBlack | termbox.AttrBold
 	case blackKing:
 		squarePiece = 'K'
-		squareFgColour = termbox.ColorRed | termbox.AttrBold
+		squareFgColour = termbox.ColorBlack | termbox.AttrBold
 	case blackQueen:
 		squarePiece = 'Q'
-		squareFgColour = termbox.ColorRed | termbox.AttrBold
+		squareFgColour = termbox.ColorBlack | termbox.AttrBold
 	}
 
 	/* A square will actually be rendered as a 5x3 grid, with the piece in the middle.
@@ -79,34 +111,34 @@ func renderSquare(x int, y int, square int) {
 	}
 }
 
-func renderBoard(b *board) error {
+func renderBoard(c *cursesBoard, b *board) error {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
-	termWidth, termHeight = termbox.Size()
+	c.termWidth, c.termHeight = termbox.Size()
 
 	for x, col := range b.squares {
 		for y, sq := range col {
-			renderSquare(x, y, sq)
+			renderSquare(c, x, y, sq)
 		}
 	}
 
 	return termbox.Flush()
 }
 
-func renderStatusLine(line string) error {
-	return renderTextLine(statusYPos, line)
+func renderStatusLine(c *cursesBoard, line string) error {
+	return renderTextLine(c, statusYPos, line)
 }
 
-func renderScoreLine(line string) error {
-	return renderTextLine(scoreYPos, line)
+func renderScoreLine(c *cursesBoard, line string) error {
+	return renderTextLine(c, scoreYPos, line)
 }
 
-func renderTextLine(ypos int, line string) error {
+func renderTextLine(c *cursesBoard, ypos int, line string) error {
 	for pos, char := range line {
 		termbox.SetCell(pos, ypos, char, termbox.ColorDefault, termbox.ColorDefault)
 	}
 
-	for pos := len(line); pos < termWidth; pos++ {
+	for pos := len(line); pos < c.termWidth; pos++ {
 		termbox.SetCell(pos, ypos, ' ', termbox.ColorDefault, termbox.ColorDefault)
 	}
 
@@ -127,51 +159,59 @@ func handleKeyEvent() {
 	}
 }
 
-func handleMoveInput(b *board) move {
-	curPos := 0
-	ret := move{}
+func handleMoveInput(c *cursesBoard, b *board) *move {
+	c.state = userMoveFrom
 
-	renderStatusLine("Make move:")
-	renderTextLine(moveYPos, fmt.Sprintf("  [%d,%d] -> [%d,%d]", ret.fromX, ret.fromY, ret.toX, ret.toY))
+	renderBoard(c, b)
+	renderStatusLine(c, "Your turn")
 
 	for {
 		switch ev := termbox.PollEvent(); {
 		case ev.Key == termbox.KeyEsc:
 			os.Exit(0)
 		case ev.Key == termbox.KeyEnter:
-			if !validMove(b, &ret, white) {
-				ret = move{}
-				curPos = 0
-
-				renderStatusLine("Invalid move, try again:")
-				renderTextLine(moveYPos, fmt.Sprintf("  [%d,%d] -> [%d,%d]", ret.fromX, ret.fromY, ret.toX, ret.toY))
-				break
+			if c.state == userMoveFrom {
+				if isWhite(b.squares[c.cursorXPos][c.cursorYPos]) {
+					c.move.fromX = c.cursorXPos
+					c.move.fromY = c.cursorYPos
+					c.state = userMoveTo
+				}
+			} else if c.state == userMoveTo {
+				if c.cursorXPos == c.move.fromX && c.cursorYPos == c.move.fromY {
+					c.state = userMoveFrom
+					break
+				}
+				c.move.toX = c.cursorXPos
+				c.move.toY = c.cursorYPos
+				if validMove(b, c.move, white) {
+					c.state = aiMove
+					return c.move
+				}
 			}
-
-			return ret
-		case unicode.IsDigit(ev.Ch): // Only deal with coords for now
-			val := int(ev.Ch) - '0' // Convert UTF-8 integer char to int by subtracting UTF-8 '0'
-
-			switch curPos {
-			case 0:
-				ret.fromX = val
-			case 1:
-				ret.fromY = val
-			case 2:
-				ret.toX = val
-			case 3:
-				ret.toY = val
-			default:
-				continue
+		case ev.Key == termbox.KeyArrowDown:
+			if c.cursorYPos > 0 {
+				c.cursorYPos--
 			}
-
-			if curPos > 3 {
-				continue
+			renderBoard(c, b)
+			renderStatusLine(c, "Your turn")
+		case ev.Key == termbox.KeyArrowLeft:
+			if c.cursorXPos > 0 {
+				c.cursorXPos--
 			}
-
-			curPos++
-			renderTextLine(moveYPos, fmt.Sprintf("  [%d,%d] -> [%d,%d]", ret.fromX, ret.fromY, ret.toX, ret.toY))
-			termbox.Flush()
+			renderBoard(c, b)
+			renderStatusLine(c, "Your turn")
+		case ev.Key == termbox.KeyArrowRight:
+			if c.cursorXPos < 8 {
+				c.cursorXPos++
+			}
+			renderBoard(c, b)
+			renderStatusLine(c, "Your turn")
+		case ev.Key == termbox.KeyArrowUp:
+			if c.cursorYPos < 8 {
+				c.cursorYPos++
+			}
+			renderBoard(c, b)
+			renderStatusLine(c, "Your turn")
 		}
 	}
 }
