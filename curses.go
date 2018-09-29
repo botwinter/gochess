@@ -201,13 +201,13 @@ func handleMoveInput(c *cursesBoard, b *board) *move {
 			renderBoard(c, b)
 			renderStatusLine(c, "Your turn")
 		case ev.Key == termbox.KeyArrowRight:
-			if c.cursorXPos < 8 {
+			if c.cursorXPos < 7 {
 				c.cursorXPos++
 			}
 			renderBoard(c, b)
 			renderStatusLine(c, "Your turn")
 		case ev.Key == termbox.KeyArrowUp:
-			if c.cursorYPos < 8 {
+			if c.cursorYPos < 7 {
 				c.cursorYPos++
 			}
 			renderBoard(c, b)

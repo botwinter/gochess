@@ -35,7 +35,7 @@ func main() {
 
 		// Find AI move
 		renderBoard(c, b)
-		renderStatusLine(c, "AI is thinking...")
+		renderStatusLine(c, "Computer is thinking...")
 		bestAIMove := findBestMove(b, black)
 
 		// Make AI move

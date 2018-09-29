@@ -34,8 +34,6 @@ const (
 	bottomRightDiagonal
 )
 
-const ()
-
 func isWhite(piece int) bool {
 	if piece == whitePawn || piece == whiteBishop || piece == whiteKnight || piece == whiteRook || piece == whiteQueen || piece == whiteKing {
 		return true

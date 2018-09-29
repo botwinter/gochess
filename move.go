@@ -849,7 +849,7 @@ func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []
 			}
 		}
 
-		if move.toX+1 >= 0 {
+		if move.toX+1 < 8 {
 			if move.toY-2 >= 0 {
 				if (colour == white && b.squares[move.toX+1][move.toY-2] == blackKnight) || (colour == black && b.squares[move.toX+1][move.toY-2] == whiteKnight) {
 					knightFound = true
@@ -872,11 +872,11 @@ func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []
 		// Now pawns...
 		pawnFound := false
 		if colour == white {
-			if (move.toX-1 > 0 && move.toY < 8 && b.squares[move.toX-1][move.toY+1] == blackPawn) || (move.toX+1 < 8 && move.toY < 8 && b.squares[move.toX+1][move.toY+1] == blackPawn) {
+			if (move.toX-1 >= 0 && move.toY < 8 && b.squares[move.toX-1][move.toY+1] == blackPawn) || (move.toX+1 < 8 && move.toY < 8 && b.squares[move.toX+1][move.toY+1] == blackPawn) {
 				pawnFound = true
 			}
 		} else {
-			if (move.toX-1 >= 0 && move.toY-1 >= 0 && b.squares[move.toX-1][move.toY-1] == whitePawn) || (move.toX+1 >= 0 && move.toY-1 >= 0 && b.squares[move.toX+1][move.toY-1] == whitePawn) {
+			if (move.toX-1 >= 0 && move.toY-1 >= 0 && b.squares[move.toX-1][move.toY-1] == whitePawn) || (move.toX+1 < 8 && move.toY-1 >= 0 && b.squares[move.toX+1][move.toY-1] == whitePawn) {
 				pawnFound = true
 			}
 		}
@@ -1026,7 +1026,7 @@ func inCheck(b *board, colour int) bool {
 		}
 	}
 
-	if kingCoords[0]+1 >= 0 {
+	if kingCoords[0]+1 < 8 {
 		if kingCoords[1]-2 >= 0 {
 			if (colour == white && b.squares[kingCoords[0]+1][kingCoords[1]-2] == blackKnight) || (colour == black && b.squares[kingCoords[0]+1][kingCoords[1]-2] == whiteKnight) {
 				return true

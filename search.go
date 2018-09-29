@@ -52,7 +52,7 @@ func findBestMove(b *board, colour int) move {
 	depth := 6
 	bestMove := move{0, 0, 0, 0, 0}
 	moveStack := make([]move, depth)
-	search(b, depth, depth, colour, -999, 999, &bestMove, &moveStack, 0)
+	search(b, depth, depth, colour, -99999, 99999, &bestMove, &moveStack, 0)
 
 	return bestMove
 }
