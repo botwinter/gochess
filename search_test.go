@@ -79,7 +79,7 @@ func Test_findBestMove(t *testing.T) {
 			},
 			move{3, 0, 2, 0, empty},
 		},
-		/*{
+		{
 			"test mate in one (1)",
 			args{
 				newBoardWithPieces([][]int{
@@ -94,7 +94,7 @@ func Test_findBestMove(t *testing.T) {
 				}), white,
 			},
 			move{3, 2, 7, 6, empty},
-		},*/
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

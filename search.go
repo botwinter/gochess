@@ -18,7 +18,8 @@ func search(b *board, depth int, origDepth int, colour int, alpha int, beta int,
 	}
 
 	if len(moves) == 0 {
-		return evaluateBoard(b, colour)
+		// We are in checkmate, so return -inf score
+		return -99999
 	}
 
 	for _, move := range moves {
