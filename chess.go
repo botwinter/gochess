@@ -27,6 +27,22 @@ func main() {
 
 	// Play the game - player is always white
 	for {
+		// Generate player's possible moves
+		validMoves := []move{}
+		if inCheck(b, white) {
+			validMoves = generateAllLegalMovesInCheck(b, white)
+		} else {
+			validMoves = generateAllLegalMoves(b, white)
+		}
+
+		if len(validMoves) == 0 {
+			renderStatusLine(c, "You lost! Press ENTER to play again")
+			handleGameEnd()
+			b = newDefaultBoard()
+			c = initCursesBoard()
+			continue
+		}
+
 		// Wait for player move
 		move := handleMoveInput(c, b)
 

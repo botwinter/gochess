@@ -159,6 +159,18 @@ func handleKeyEvent() {
 	}
 }
 
+func handleGameEnd() {
+	for {
+		switch ev := termbox.PollEvent(); {
+		case ev.Key == termbox.KeyEsc:
+			os.Exit(0)
+		case ev.Key == termbox.KeyEnter:
+			return
+		default:
+		}
+	}
+}
+
 func handleMoveInput(c *cursesBoard, b *board) *move {
 	c.state = userMoveFrom
 
