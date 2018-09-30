@@ -42,7 +42,7 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			239,
+			23905,
 		},
 		{
 			"test black taken all",
@@ -58,7 +58,7 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackRook},
 				}), white,
 			},
-			-239,
+			-23905,
 		},
 		{
 			"test mix",
@@ -74,7 +74,7 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{empty, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 				}), white,
 			},
-			-6,
+			-665,
 		},
 	}
 	for _, tt := range tests {

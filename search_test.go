@@ -32,7 +32,7 @@ func Test_findBestMove(t *testing.T) {
 			move{3, 2, 3, 4, blackQueen},
 		},
 		{
-			"test queen moving to defend king",
+			"test queens and kings",
 			args{
 				newBoardWithPieces([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -45,7 +45,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{2, 1, 3, 1, empty},
+			move{3, 0, 2, 0, empty},
 		},
 	}
 	for _, tt := range tests {

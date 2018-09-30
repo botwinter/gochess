@@ -9,71 +9,78 @@ const (
 	pawnWeight   = 100
 )
 
-var pawnEvalTable = [][]int{
-	[]int{0, 0, 0, 0, 0, 0, 0, 0},
-	[]int{50, 50, 50, 50, 50, 50, 50, 50},
-	[]int{10, 10, 20, 30, 30, 20, 10, 10},
-	[]int{5, 5, 10, 25, 25, 10, 5, 5},
-	[]int{0, 0, 0, 20, 20, 0, 0, 0},
-	[]int{5, -5, -10, 0, 0, -10, -5, 5},
-	[]int{5, 10, 10, -20, -20, 10, 10, 5},
-	[]int{0, 0, 0, 0, 0, 0, 0, 0},
+var whitePawnEvalTable = [][]int{
+	[]int{0, 5, 5, 0, 5, 10, 50, 0},
+	[]int{0, 10, -5, 0, 5, 10, 50, 0},
+	[]int{0, 10, -10, 0, 10, 20, 50, 0},
+	[]int{0, -20, 0, 20, 25, 30, 50, 0},
+	[]int{0, -20, 0, 20, 25, 30, 50, 0},
+	[]int{0, 10, -10, 0, 10, 20, 50, 0},
+	[]int{0, 10, -5, 0, 5, 10, 50, 0},
+	[]int{0, 5, 5, 0, 5, 10, 50, 0},
 }
 
-var knightEvalTable = [][]int{
+var whiteKnightEvalTable = [][]int{
 	[]int{-50, -40, -30, -30, -30, -30, -40, -50},
-	[]int{-40, -20, 0, 0, 0, 0, -20, -40},
+	[]int{-40, -20, -5, 0, 5, 0, -20, -40},
 	[]int{-30, 0, 10, 15, 15, 10, 0, -30},
-	[]int{-30, 5, 15, 20, 20, 15, 5, -30},
-	[]int{-30, 0, 15, 20, 20, 15, 0, -30},
-	[]int{-30, 5, 10, 15, 15, 10, 5, -30},
-	[]int{-40, -20, 0, 5, 5, 0, -20, -40},
+	[]int{-30, 5, 15, 20, 20, 15, 0, -30},
+	[]int{-30, 5, 15, 20, 20, 15, 0, -30},
+	[]int{-30, 0, 10, 15, 15, 10, 0, -30},
+	[]int{-40, -20, -5, 0, 5, 0, -20, -40},
 	[]int{-50, -40, -30, -30, -30, -30, -40, -50},
 }
 
-var bishopEvalTable = [][]int{
+var whiteBishopEvalTable = [][]int{
 	[]int{-20, -10, -10, -10, -10, -10, -10, -20},
-	[]int{-10, 0, 0, 0, 0, 0, 0, -10},
-	[]int{-10, 0, 5, 10, 10, 5, 0, -10},
-	[]int{-10, 5, 5, 10, 10, 5, 5, -10},
+	[]int{-10, 5, 10, 0, 5, 0, 0, -10},
+	[]int{-10, 0, 10, 10, 5, 5, 0, -10},
 	[]int{-10, 0, 10, 10, 10, 10, 0, -10},
-	[]int{-10, 10, 10, 10, 10, 10, 10, -10},
-	[]int{-10, 5, 0, 0, 0, 0, 5, -10},
+	[]int{-10, 0, 10, 10, 10, 10, 0, -10},
+	[]int{-10, 0, 10, 10, 5, 5, 0, -10},
+	[]int{-10, 5, 10, 0, 5, 0, 0, -10},
 	[]int{-20, -10, -10, -10, -10, -10, -10, -20},
 }
 
-var rookEvalTable = [][]int{
-	[]int{0, 0, 0, 0, 0, 0, 0, 0},
-	[]int{5, 10, 10, 10, 10, 10, 10, 5},
-	[]int{-5, 0, 0, 0, 0, 0, 0, -5},
-	[]int{-5, 0, 0, 0, 0, 0, 0, -5},
-	[]int{-5, 0, 0, 0, 0, 0, 0, -5},
-	[]int{-5, 0, 0, 0, 0, 0, 0, -5},
-	[]int{-5, 0, 0, 0, 0, 0, 0, -5},
-	[]int{0, 0, 0, 5, 5, 0, 0, 0},
+var whiteRookEvalTable = [][]int{
+	[]int{0, -5, -5, -5, -5, -5, 5, 0},
+	[]int{0, 0, 0, 0, 0, 0, 10, 0},
+	[]int{0, 0, 0, 0, 0, 0, 10, 0},
+	[]int{5, 0, 0, 0, 0, 0, 10, 0},
+	[]int{5, 0, 0, 0, 0, 0, 10, 0},
+	[]int{0, 0, 0, 0, 0, 0, 10, 0},
+	[]int{0, 0, 0, 0, 0, 0, 10, 0},
+	[]int{0, -5, -5, -5, -5, -5, 5, 0},
 }
 
-var queenEvalTable = [][]int{
-	[]int{-20, -10, -10, -5, -5, -10, -10, -20},
-	[]int{-10, 0, 0, 0, 0, 0, 0, -10},
-	[]int{-10, 0, 5, 5, 5, 5, 0, -10},
-	[]int{-5, 0, 5, 5, 5, 5, 0, -5},
-	[]int{0, 0, 5, 5, 5, 5, 0, -5},
-	[]int{-10, 5, 5, 5, 5, 5, 0, -10},
+var whiteQueenEvalTable = [][]int{
+	[]int{-20, -10, -10, 0, -5, -10, -10, -20},
 	[]int{-10, 0, 5, 0, 0, 0, 0, -10},
+	[]int{-10, 5, 5, 5, 5, 5, 0, -10},
+	[]int{-5, 0, 5, 5, 5, 5, 0, -5},
+	[]int{-5, 0, 5, 5, 5, 5, 0, -5},
+	[]int{-10, 5, 5, 5, 5, 5, 0, -10},
+	[]int{-10, 0, 0, 0, 0, 0, 0, -10},
 	[]int{-20, -10, -10, -5, -5, -10, -10, -20},
 }
 
-var kingEvalTable = [][]int{
-	[]int{-30, -40, -40, -50, -50, -40, -40, -30},
-	[]int{-30, -40, -40, -50, -50, -40, -40, -30},
-	[]int{-30, -40, -40, -50, -50, -40, -40, -30},
-	[]int{-30, -40, -40, -50, -50, -40, -40, -30},
-	[]int{-20, -30, -30, -40, -40, -30, -30, -20},
-	[]int{-10, -20, -20, -20, -20, -20, -20, -10},
-	[]int{20, 20, 0, 0, 0, 0, 20, 20},
-	[]int{20, 30, 10, 0, 0, 10, 30, 20},
+var whiteKingEvalTable = [][]int{
+	[]int{20, 20, -10, -20, -30, -30, -30, -30},
+	[]int{30, 20, -20, -30, -40, -40, -40, -40},
+	[]int{10, 0, -20, -30, -40, -40, -40, -40},
+	[]int{0, 0, -20, -40, -50, -50, -50, -50},
+	[]int{0, 0, -20, -40, -50, -50, -50, -50},
+	[]int{10, 0, -20, -30, -40, -40, -40, -40},
+	[]int{30, 20, -20, -30, -40, -40, -40, -40},
+	[]int{20, 20, -10, -20, -30, -30, -30, -30},
 }
+
+var blackPawnEvalTable = reverseBoardArray(whitePawnEvalTable)
+var blackKnightEvalTable = reverseBoardArray(whiteKnightEvalTable)
+var blackBishopEvalTable = reverseBoardArray(whiteBishopEvalTable)
+var blackRookEvalTable = reverseBoardArray(whiteRookEvalTable)
+var blackQueenEvalTable = reverseBoardArray(whiteQueenEvalTable)
+var blackKingEvalTable = reverseBoardArray(whiteKingEvalTable)
 
 /* This is a slightly less basic material + position evaluation */
 func evaluateBoard(b *board, colour int) int {
@@ -83,97 +90,97 @@ func evaluateBoard(b *board, colour int) int {
 		for y, sq := range col {
 			if sq == whiteKing {
 				if colour == white {
-					score += (kingWeight + kingEvalTable[x][y])
+					score += (kingWeight + whiteKingEvalTable[x][y])
 				} else {
-					score -= (kingWeight + kingEvalTable[x][y])
+					score -= (kingWeight + whiteKingEvalTable[x][y])
 				}
 			}
 
 			if sq == blackKing {
 				if colour == black {
-					score += (kingWeight + kingEvalTable[x][7-y])
+					score += (kingWeight + blackKingEvalTable[x][y])
 				} else {
-					score -= (kingWeight + kingEvalTable[x][7-y])
+					score -= (kingWeight + blackKingEvalTable[x][y])
 				}
 			}
 
 			if sq == whiteQueen {
 				if colour == white {
-					score += (queenWeight + queenEvalTable[x][y])
+					score += (queenWeight + whiteQueenEvalTable[x][y])
 				} else {
-					score -= (queenWeight + queenEvalTable[x][y])
+					score -= (queenWeight + whiteQueenEvalTable[x][y])
 				}
 			}
 
 			if sq == blackQueen {
 				if colour == black {
-					score += (queenWeight + queenEvalTable[x][7-y])
+					score += (queenWeight + blackQueenEvalTable[x][y])
 				} else {
-					score -= (queenWeight + queenEvalTable[x][7-y])
+					score -= (queenWeight + blackQueenEvalTable[x][y])
 				}
 			}
 
 			if sq == whiteRook {
 				if colour == white {
-					score += (rookWeight + rookEvalTable[x][y])
+					score += (rookWeight + whiteRookEvalTable[x][y])
 				} else {
-					score -= (rookWeight + rookEvalTable[x][y])
+					score -= (rookWeight + whiteRookEvalTable[x][y])
 				}
 			}
 
 			if sq == blackRook {
 				if colour == black {
-					score += (rookWeight + rookEvalTable[x][7-y])
+					score += (rookWeight + blackRookEvalTable[x][y])
 				} else {
-					score -= (rookWeight + rookEvalTable[x][7-y])
+					score -= (rookWeight + blackRookEvalTable[x][y])
 				}
 			}
 
 			if sq == whiteBishop {
 				if colour == white {
-					score += (bishopWeight + bishopEvalTable[x][y])
+					score += (bishopWeight + whiteBishopEvalTable[x][y])
 				} else {
-					score -= (bishopWeight + bishopEvalTable[x][y])
+					score -= (bishopWeight + whiteBishopEvalTable[x][y])
 				}
 			}
 
 			if sq == blackBishop {
 				if colour == black {
-					score += (bishopWeight + bishopEvalTable[x][7-y])
+					score += (bishopWeight + blackBishopEvalTable[x][y])
 				} else {
-					score -= (bishopWeight + bishopEvalTable[x][7-y])
+					score -= (bishopWeight + blackBishopEvalTable[x][y])
 				}
 			}
 
 			if sq == whiteKnight {
 				if colour == white {
-					score += (knightWeight + knightEvalTable[x][y])
+					score += (knightWeight + whiteKnightEvalTable[x][y])
 				} else {
-					score -= (knightWeight + knightEvalTable[x][y])
+					score -= (knightWeight + whiteKnightEvalTable[x][y])
 				}
 			}
 
 			if sq == blackKnight {
 				if colour == black {
-					score += (knightWeight + knightEvalTable[x][7-y])
+					score += (knightWeight + blackKnightEvalTable[x][y])
 				} else {
-					score -= (knightWeight + knightEvalTable[x][7-y])
+					score -= (knightWeight + blackKnightEvalTable[x][y])
 				}
 			}
 
 			if sq == whitePawn {
 				if colour == white {
-					score += (pawnWeight + pawnEvalTable[x][y])
+					score += (pawnWeight + whitePawnEvalTable[x][y])
 				} else {
-					score -= (pawnWeight + pawnEvalTable[x][y])
+					score -= (pawnWeight + whitePawnEvalTable[x][y])
 				}
 			}
 
 			if sq == blackPawn {
 				if colour == black {
-					score += (pawnWeight + pawnEvalTable[x][7-y])
+					score += (pawnWeight + blackPawnEvalTable[x][y])
 				} else {
-					score -= (pawnWeight + pawnEvalTable[x][7-y])
+					score -= (pawnWeight + blackPawnEvalTable[x][y])
 				}
 			}
 		}
