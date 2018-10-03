@@ -784,6 +784,29 @@ func Test_generateKingMoves(t *testing.T) {
 				move{3, 7, 2, 6, empty, quiet, none},
 			},
 		},
+		{
+			"test castle if rook taken",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, whiteBishop},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{whiteKing, empty, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, blackRook},
+				}), [2]int{4, 7}, black, []move{},
+			},
+			[]move{
+				move{4, 7, 3, 7, empty, quiet, none},
+				move{4, 7, 5, 7, empty, quiet, none},
+				move{4, 7, 5, 6, empty, quiet, none},
+				move{4, 7, 4, 6, empty, quiet, none},
+				move{4, 7, 3, 6, empty, quiet, none},
+				move{4, 7, 6, 7, empty, kingCastle, none},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

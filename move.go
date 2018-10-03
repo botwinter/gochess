@@ -803,9 +803,16 @@ func canCastle(b *board, kingcoords [2]int, colour int) (bool, bool) {
 	if colour == white && b.flags&whiteRookKingSideMoved != 0 || colour == black && b.flags&blackRookKingSideMoved != 0 {
 		canCastleKingSide = false
 	}
-
 	if colour == white && b.flags&whiteRookQueenSideMoved != 0 || colour == black && b.flags&blackRookQueenSideMoved != 0 {
 		canCastleQueenSide = false
+	}
+
+	// Check for rooks not taken
+	if colour == white && b.squares[0][yPos] != whiteRook || colour == black && b.squares[0][yPos] != blackRook {
+		canCastleQueenSide = false
+	}
+	if colour == white && b.squares[7][yPos] != whiteRook || colour == black && b.squares[7][yPos] != blackRook {
+		canCastleKingSide = false
 	}
 
 	// Check for pieces between king and castling rook
