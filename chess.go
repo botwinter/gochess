@@ -10,11 +10,16 @@ import (
 // Global flags
 var cursesEnabled bool
 
+var searchDepth = 5
+
 func main() {
 	b := newDefaultBoard()
 	c := initCursesBoard()
 
 	cursesEnabled = true
+
+	// Set deeper search depth for real game
+	searchDepth = 6
 
 	termbox.Init()
 	defer termbox.Close()

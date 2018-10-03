@@ -38,7 +38,7 @@ func initCursesBoard() *cursesBoard {
 
 	c.state = start
 	c.termWidth, c.termHeight = termbox.Size()
-	c.move = &move{0, 0, 0, 0, empty}
+	c.move = &move{0, 0, 0, 0, empty, quiet, none}
 
 	return &c
 }
@@ -195,9 +195,10 @@ func handleMoveInput(c *cursesBoard, b *board) *move {
 				}
 				c.move.toX = c.cursorXPos
 				c.move.toY = c.cursorYPos
-				if validMove(b, c.move, white) {
+				validM := validMove(b, c.move, white)
+				if validM != nil {
 					c.state = aiMove
-					return c.move
+					return validM
 				}
 			}
 		case ev.Key == termbox.KeyArrowDown:

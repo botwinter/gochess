@@ -1,7 +1,21 @@
 package main
 
+const (
+	none = 1 << iota
+
+	// Castling flags
+	whiteRookKingSideMoved
+	whiteRookQueenSideMoved
+	whiteKingMoved
+	blackRookKingSideMoved
+	blackRookQueenSideMoved
+	blackKingMoved
+)
+
 type board struct {
 	squares [][]int
+
+	flags uint64
 }
 
 func newBoard() *board {
@@ -11,7 +25,53 @@ func newBoard() *board {
 }
 
 func newBoardWithPieces(pieces [][]int) *board {
-	b := board{pieces}
+	b := board{pieces, none}
+
+	// Set flags based on piece layout
+	if b.squares[0][0] != whiteRook {
+		b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
+	}
+	if b.squares[4][0] != whiteKing {
+		b.flags = setFlag(b.flags, whiteKingMoved)
+	}
+	if b.squares[7][0] != whiteRook {
+		b.flags = setFlag(b.flags, whiteRookKingSideMoved)
+	}
+	if b.squares[0][7] != blackRook {
+		b.flags = setFlag(b.flags, blackRookQueenSideMoved)
+	}
+	if b.squares[4][7] != blackKing {
+		b.flags = setFlag(b.flags, blackKingMoved)
+	}
+	if b.squares[7][7] != blackRook {
+		b.flags = setFlag(b.flags, blackRookKingSideMoved)
+	}
+
+	return &b
+}
+
+func newBoardWithPiecesAndFlags(pieces [][]int, flags uint64) *board {
+	b := board{pieces, flags}
+
+	// Set flags based on piece layout
+	if b.squares[0][0] != whiteRook {
+		b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
+	}
+	if b.squares[4][0] != whiteKing {
+		b.flags = setFlag(b.flags, whiteKingMoved)
+	}
+	if b.squares[7][0] != whiteRook {
+		b.flags = setFlag(b.flags, whiteRookKingSideMoved)
+	}
+	if b.squares[0][7] != blackRook {
+		b.flags = setFlag(b.flags, blackRookQueenSideMoved)
+	}
+	if b.squares[4][7] != blackKing {
+		b.flags = setFlag(b.flags, blackKingMoved)
+	}
+	if b.squares[7][7] != blackRook {
+		b.flags = setFlag(b.flags, blackRookKingSideMoved)
+	}
 
 	return &b
 }
@@ -144,14 +204,147 @@ func isEnemyInDirection(b *board, kingCoords [2]int, pieceCoords [2]int, colour 
 
 /* This function assumes the move is valid */
 func makeMove(b *board, m *move) *board {
+	fromPiece := b.squares[m.fromX][m.fromY]
+
+	// Check for castle
+	if hasFlag(m.flags, kingCastle) {
+		b.squares[4][m.fromY] = empty
+		b.squares[7][m.fromY] = empty
+		if m.fromY == 0 {
+			b.flags = setFlag(b.flags, whiteRookKingSideMoved)
+			b.flags = setFlag(b.flags, whiteKingMoved)
+			m.boardFlags = setFlag(m.boardFlags, whiteRookKingSideMoved)
+			m.boardFlags = setFlag(m.boardFlags, whiteKingMoved)
+			b.squares[6][m.fromY] = whiteKing
+			b.squares[5][m.fromY] = whiteRook
+		} else {
+			b.flags = setFlag(b.flags, blackRookKingSideMoved)
+			b.flags = setFlag(b.flags, blackKingMoved)
+			m.boardFlags = setFlag(m.boardFlags, blackRookKingSideMoved)
+			m.boardFlags = setFlag(m.boardFlags, blackKingMoved)
+			b.squares[6][m.fromY] = blackKing
+			b.squares[5][m.fromY] = blackRook
+		}
+
+		return b
+	} else if hasFlag(m.flags, queenCastle) {
+		b.squares[4][m.fromY] = empty
+		b.squares[0][m.fromY] = empty
+		if m.fromY == 0 {
+			b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
+			b.flags = setFlag(b.flags, whiteKingMoved)
+			m.boardFlags = setFlag(m.boardFlags, whiteRookQueenSideMoved)
+			m.boardFlags = setFlag(m.boardFlags, whiteKingMoved)
+			b.squares[2][m.fromY] = whiteKing
+			b.squares[3][m.fromY] = whiteRook
+		} else {
+			b.flags = setFlag(b.flags, blackRookQueenSideMoved)
+			b.flags = setFlag(b.flags, blackKingMoved)
+			m.boardFlags = setFlag(m.boardFlags, blackRookQueenSideMoved)
+			m.boardFlags = setFlag(m.boardFlags, blackKingMoved)
+			b.squares[2][m.fromY] = blackKing
+			b.squares[3][m.fromY] = blackRook
+		}
+
+		return b
+	}
+
+	// If not castling, then set any flags for future castling.
+	// Also set them in the move so we can unset them later.
+	if fromPiece == whiteRook {
+		if m.fromX == 0 {
+			if !hasFlag(b.flags, whiteRookQueenSideMoved) {
+				b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
+				m.boardFlags = setFlag(m.boardFlags, whiteRookQueenSideMoved)
+			}
+		} else {
+			if !hasFlag(b.flags, whiteRookKingSideMoved) {
+				b.flags = setFlag(b.flags, whiteRookKingSideMoved)
+				m.boardFlags = setFlag(m.boardFlags, whiteRookKingSideMoved)
+			}
+		}
+	} else if fromPiece == blackRook {
+		if m.fromX == 0 {
+			if !hasFlag(b.flags, blackRookQueenSideMoved) {
+				b.flags = setFlag(b.flags, blackRookQueenSideMoved)
+				m.boardFlags = setFlag(m.boardFlags, blackRookQueenSideMoved)
+			}
+		} else {
+			if !hasFlag(b.flags, blackRookKingSideMoved) {
+				b.flags = setFlag(b.flags, blackRookKingSideMoved)
+				m.boardFlags = setFlag(m.boardFlags, blackRookKingSideMoved)
+			}
+		}
+	} else if fromPiece == whiteKing {
+		if !hasFlag(b.flags, whiteKingMoved) {
+			b.flags = setFlag(b.flags, whiteKingMoved)
+			m.boardFlags = setFlag(m.boardFlags, whiteKingMoved)
+		}
+	} else if fromPiece == blackKing {
+		if !hasFlag(b.flags, blackKingMoved) {
+			b.flags = setFlag(b.flags, blackKingMoved)
+			m.boardFlags = setFlag(m.boardFlags, blackKingMoved)
+		}
+	}
+
+	// Make the standard move
 	m.taken = b.squares[m.toX][m.toY]
-	b.squares[m.toX][m.toY] = b.squares[m.fromX][m.fromY]
+	b.squares[m.toX][m.toY] = fromPiece
 	b.squares[m.fromX][m.fromY] = empty
 
 	return b
 }
 
+/* This function unmakes a move, including any board-level flags set during a move. */
 func unmakeMove(b *board, m *move) *board {
+	// Unset any flags that might have been set
+	if hasFlag(m.boardFlags, whiteRookKingSideMoved) {
+		b.flags = clearFlag(b.flags, whiteRookKingSideMoved)
+	}
+	if hasFlag(m.boardFlags, whiteRookQueenSideMoved) {
+		b.flags = clearFlag(b.flags, whiteRookQueenSideMoved)
+	}
+	if hasFlag(m.boardFlags, blackRookKingSideMoved) {
+		b.flags = clearFlag(b.flags, blackRookKingSideMoved)
+	}
+	if hasFlag(m.boardFlags, blackRookQueenSideMoved) {
+		b.flags = clearFlag(b.flags, blackRookQueenSideMoved)
+	}
+	if hasFlag(m.boardFlags, whiteKingMoved) {
+		b.flags = clearFlag(b.flags, whiteKingMoved)
+	}
+	if hasFlag(m.boardFlags, blackKingMoved) {
+		b.flags = clearFlag(b.flags, blackKingMoved)
+	}
+
+	// Check for castle
+	if hasFlag(m.flags, kingCastle) {
+		if m.fromY == 0 {
+			b.squares[4][m.fromY] = whiteKing
+			b.squares[7][m.fromY] = whiteRook
+		} else {
+			b.squares[4][m.fromY] = blackKing
+			b.squares[7][m.fromY] = blackRook
+		}
+
+		b.squares[6][m.fromY] = empty
+		b.squares[5][m.fromY] = empty
+
+		return b
+	} else if hasFlag(m.flags, queenCastle) {
+		if m.fromY == 0 {
+			b.squares[4][m.fromY] = whiteKing
+			b.squares[0][m.fromY] = whiteRook
+		} else {
+			b.squares[4][m.fromY] = blackKing
+			b.squares[0][m.fromY] = blackRook
+		}
+		b.squares[2][m.fromY] = empty
+		b.squares[3][m.fromY] = empty
+
+		return b
+	}
+
 	b.squares[m.fromX][m.fromY] = b.squares[m.toX][m.toY]
 	b.squares[m.toX][m.toY] = m.taken
 
@@ -159,10 +352,10 @@ func unmakeMove(b *board, m *move) *board {
 }
 
 // Keep this in a separate function so we only do it for user-provided moves
-func validMove(b *board, m *move, colour int) bool {
+func validMove(b *board, m *move, colour int) *move {
 	// Basic checks
 	if m.fromX < 0 || m.fromX > 7 || m.fromY < 0 || m.fromY > 7 || m.toX < 0 || m.toX > 7 || m.toY < 0 || m.toY > 7 {
-		return false
+		return nil
 	}
 
 	validMoves := []move{}
@@ -174,9 +367,9 @@ func validMove(b *board, m *move, colour int) bool {
 
 	for _, move := range validMoves {
 		if m.fromX == move.fromX && m.fromY == move.fromY && m.toX == move.toX && m.toY == move.toY {
-			return true
+			return &move
 		}
 	}
 
-	return false
+	return nil
 }

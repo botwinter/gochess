@@ -29,7 +29,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{3, 2, 3, 4, blackQueen},
+			move{3, 2, 3, 4, blackQueen, quiet, none},
 		},
 		{
 			"test basic queen taking king",
@@ -45,7 +45,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{1, 5, 3, 7, blackKing},
+			move{1, 5, 3, 7, blackKing, quiet, none},
 		},
 		{
 			"test 4 move checkmate",
@@ -61,7 +61,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 				}), white,
 			},
-			move{5, 2, 5, 6, blackPawn},
+			move{5, 2, 5, 6, blackPawn, quiet, none},
 		},
 		{
 			"test queens and kings",
@@ -77,7 +77,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{3, 0, 2, 0, empty},
+			move{3, 0, 2, 0, empty, quiet, none},
 		},
 		{
 			"test mate in one (1)",
@@ -93,7 +93,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, whitePawn, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{3, 2, 7, 6, empty},
+			move{3, 2, 7, 6, empty, quiet, none},
 		},
 	}
 	for _, tt := range tests {
