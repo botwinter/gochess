@@ -1,10 +1,8 @@
 package main
 
 const (
-	none = 1 << iota
-
 	// Castling flags
-	whiteRookKingSideMoved
+	whiteRookKingSideMoved = 1 << iota
 	whiteRookQueenSideMoved
 	whiteKingMoved
 	blackRookKingSideMoved
@@ -25,7 +23,7 @@ func newBoard() *board {
 }
 
 func newBoardWithPieces(pieces [][]int) *board {
-	b := board{pieces, none}
+	b := board{pieces, 0}
 
 	// Set flags based on piece layout
 	if b.squares[0][0] != whiteRook {
@@ -86,19 +84,6 @@ func newDefaultBoard() *board {
 		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
 		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
 		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
-	})
-}
-
-func newDebugBoard() *board {
-	return newBoardWithPieces([][]int{
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{whiteKing, empty, whiteQueen, empty, blackQueen, empty, empty, blackKing},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 	})
 }
 
@@ -205,9 +190,34 @@ func isEnemyInDirection(b *board, kingCoords [2]int, pieceCoords [2]int, colour 
 /* This function assumes the move is valid */
 func makeMove(b *board, m *move) *board {
 	fromPiece := b.squares[m.fromX][m.fromY]
+	toPiece := fromPiece
 
-	// Check for castle
-	if hasFlag(m.flags, kingCastle) {
+	// Check for special move flags
+	if hasFlag(m.flags, queenPromotion) {
+		if isWhite(fromPiece) {
+			toPiece = whiteQueen
+		} else {
+			toPiece = blackQueen
+		}
+	} else if hasFlag(m.flags, rookPromotion) {
+		if isWhite(fromPiece) {
+			toPiece = whiteRook
+		} else {
+			toPiece = blackRook
+		}
+	} else if hasFlag(m.flags, knightPromotion) {
+		if isWhite(fromPiece) {
+			toPiece = whiteKnight
+		} else {
+			toPiece = blackKnight
+		}
+	} else if hasFlag(m.flags, bishopPromotion) {
+		if isWhite(fromPiece) {
+			toPiece = whiteBishop
+		} else {
+			toPiece = blackBishop
+		}
+	} else if hasFlag(m.flags, kingCastle) {
 		b.squares[4][m.fromY] = empty
 		b.squares[7][m.fromY] = empty
 		if m.fromY == 0 {
@@ -252,24 +262,24 @@ func makeMove(b *board, m *move) *board {
 	// If not castling, then set any flags for future castling.
 	// Also set them in the move so we can unset them later.
 	if fromPiece == whiteRook {
-		if m.fromX == 0 {
+		if m.fromX == 0 && m.fromY == 0 {
 			if !hasFlag(b.flags, whiteRookQueenSideMoved) {
 				b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
 				m.boardFlags = setFlag(m.boardFlags, whiteRookQueenSideMoved)
 			}
-		} else {
+		} else if m.fromX == 7 && m.fromY == 0 {
 			if !hasFlag(b.flags, whiteRookKingSideMoved) {
 				b.flags = setFlag(b.flags, whiteRookKingSideMoved)
 				m.boardFlags = setFlag(m.boardFlags, whiteRookKingSideMoved)
 			}
 		}
 	} else if fromPiece == blackRook {
-		if m.fromX == 0 {
+		if m.fromX == 0 && m.fromY == 7 {
 			if !hasFlag(b.flags, blackRookQueenSideMoved) {
 				b.flags = setFlag(b.flags, blackRookQueenSideMoved)
 				m.boardFlags = setFlag(m.boardFlags, blackRookQueenSideMoved)
 			}
-		} else {
+		} else if m.fromX == 7 && m.fromY == 7 {
 			if !hasFlag(b.flags, blackRookKingSideMoved) {
 				b.flags = setFlag(b.flags, blackRookKingSideMoved)
 				m.boardFlags = setFlag(m.boardFlags, blackRookKingSideMoved)
@@ -289,7 +299,7 @@ func makeMove(b *board, m *move) *board {
 
 	// Make the standard move
 	m.taken = b.squares[m.toX][m.toY]
-	b.squares[m.toX][m.toY] = fromPiece
+	b.squares[m.toX][m.toY] = toPiece
 	b.squares[m.fromX][m.fromY] = empty
 
 	return b
@@ -297,7 +307,9 @@ func makeMove(b *board, m *move) *board {
 
 /* This function unmakes a move, including any board-level flags set during a move. */
 func unmakeMove(b *board, m *move) *board {
-	// Unset any flags that might have been set
+	fromPiece := b.squares[m.toX][m.toY]
+
+	// Unset any board-level flags that might have been set
 	if hasFlag(m.boardFlags, whiteRookKingSideMoved) {
 		b.flags = clearFlag(b.flags, whiteRookKingSideMoved)
 	}
@@ -317,7 +329,15 @@ func unmakeMove(b *board, m *move) *board {
 		b.flags = clearFlag(b.flags, blackKingMoved)
 	}
 
-	// Check for castle
+	// Check for special move flags
+	if hasFlag(m.flags, queenPromotion) || hasFlag(m.flags, rookPromotion) || hasFlag(m.flags, knightPromotion) || hasFlag(m.flags, bishopPromotion) {
+		if isWhite(fromPiece) {
+			fromPiece = whitePawn
+		} else {
+			fromPiece = blackPawn
+		}
+	}
+
 	if hasFlag(m.flags, kingCastle) {
 		if m.fromY == 0 {
 			b.squares[4][m.fromY] = whiteKing
@@ -345,7 +365,7 @@ func unmakeMove(b *board, m *move) *board {
 		return b
 	}
 
-	b.squares[m.fromX][m.fromY] = b.squares[m.toX][m.toY]
+	b.squares[m.fromX][m.fromY] = fromPiece
 	b.squares[m.toX][m.toY] = m.taken
 
 	return b

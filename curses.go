@@ -38,7 +38,7 @@ func initCursesBoard() *cursesBoard {
 
 	c.state = start
 	c.termWidth, c.termHeight = termbox.Size()
-	c.move = &move{0, 0, 0, 0, empty, quiet, none}
+	c.move = &move{0, 0, 0, 0, empty, 0, 0}
 
 	return &c
 }

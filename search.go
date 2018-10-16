@@ -51,7 +51,7 @@ func search(b *board, depth int, origDepth int, colour int, alpha int, beta int,
 
 func findBestMove(b *board, colour int) move {
 	depth := searchDepth
-	bestMove := move{0, 0, 0, 0, empty, quiet, none}
+	bestMove := move{0, 0, 0, 0, empty, 0, 0}
 	moveStack := make([]move, depth)
 	search(b, depth, depth, colour, -99999, 99999, &bestMove, &moveStack, 0)
 

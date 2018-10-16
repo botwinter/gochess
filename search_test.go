@@ -29,7 +29,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{3, 2, 3, 4, blackQueen, quiet, none},
+			move{3, 2, 3, 4, blackQueen, 0, 0},
 		},
 		{
 			"test basic queen taking king",
@@ -45,7 +45,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{1, 5, 3, 7, blackKing, quiet, none},
+			move{1, 5, 3, 7, blackKing, 0, 0},
 		},
 		{
 			"test 4 move checkmate",
@@ -61,7 +61,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 				}), white,
 			},
-			move{5, 2, 5, 6, blackPawn, quiet, none},
+			move{5, 2, 5, 6, blackPawn, 0, 0},
 		},
 		{
 			"test queens and kings",
@@ -77,7 +77,7 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{3, 0, 2, 0, empty, quiet, none},
+			move{3, 0, 2, 0, empty, 0, 0},
 		},
 		{
 			"test mate in one (1)",
@@ -93,7 +93,39 @@ func Test_findBestMove(t *testing.T) {
 					[]int{empty, whitePawn, empty, empty, empty, empty, empty, empty},
 				}), white,
 			},
-			move{3, 2, 7, 6, empty, quiet, none},
+			move{3, 2, 7, 6, empty, 0, 0},
+		},
+		{
+			"test pawn promotion to queen",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, whitePawn, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{whiteKing, whiteBishop, empty, empty, empty, empty, empty, blackKing},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				}), white,
+			},
+			move{0, 6, 0, 7, empty, queenPromotion, 0},
+		},
+		{
+			"test pawn promotion to knight",
+			args{
+				newBoardWithPieces([][]int{
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+					[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
+					[]int{empty, empty, empty, empty, empty, empty, whiteKnight, empty},
+					[]int{empty, empty, empty, empty, empty, empty, whitePawn, empty},
+					[]int{empty, empty, empty, empty, empty, blackPawn, blackPawn, whiteKnight},
+					[]int{empty, empty, empty, empty, empty, blackPawn, blackKing, blackBishop},
+				}), white,
+			},
+			move{5, 6, 5, 7, empty, knightPromotion, 0},
 		},
 	}
 	for _, tt := range tests {
