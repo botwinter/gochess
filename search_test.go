@@ -111,22 +111,6 @@ func Test_findBestMove(t *testing.T) {
 			},
 			move{0, 6, 0, 7, empty, queenPromotion, 0},
 		},
-		{
-			"test pawn promotion to knight",
-			args{
-				newBoardWithPieces([][]int{
-					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
-					[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
-					[]int{empty, empty, empty, empty, empty, empty, whiteKnight, empty},
-					[]int{empty, empty, empty, empty, empty, empty, whitePawn, empty},
-					[]int{empty, empty, empty, empty, empty, blackPawn, blackPawn, whiteKnight},
-					[]int{empty, empty, empty, empty, empty, blackPawn, blackKing, blackBishop},
-				}), white,
-			},
-			move{5, 6, 5, 7, empty, knightPromotion, 0},
-		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -75,12 +75,12 @@ func generatePawnMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 			continue
 		}
 
-		// Next, check the target square. Forward moves require an empty square, diagonal moves require an enemy or en passant
+		// Next, check the target square. Forward moves require an empty square, diagonal moves require an enemy
 		if toX == fromX {
 			// 1 square
 			if toY-fromY == 1 || toY-fromY == -1 {
-				if b.squares[toX][toY] == empty {
-
+				if b.squares[toX][toY] != empty {
+					continue
 				}
 			}
 
