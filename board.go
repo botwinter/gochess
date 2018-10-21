@@ -8,6 +8,7 @@ const (
 	blackRookKingSideMoved
 	blackRookQueenSideMoved
 	blackKingMoved
+	numBoardFlags
 )
 
 type board struct {

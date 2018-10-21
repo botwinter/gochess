@@ -4,8 +4,7 @@ import "testing"
 
 func Test_evaluateBoard(t *testing.T) {
 	type args struct {
-		b      *board
-		colour int
+		b *board
 	}
 	tests := []struct {
 		name string
@@ -24,7 +23,7 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
-				}), white,
+				}),
 			},
 			0,
 		},
@@ -40,7 +39,7 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{whiteBishop, whitePawn, empty, empty, empty, empty, empty, empty},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, empty, empty},
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, empty, empty},
-				}), white,
+				}),
 			},
 			23905,
 		},
@@ -56,7 +55,7 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackBishop},
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackKnight},
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackRook},
-				}), white,
+				}),
 			},
 			-23905,
 		},
@@ -72,14 +71,14 @@ func Test_evaluateBoard(t *testing.T) {
 					[]int{empty, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, empty},
 					[]int{empty, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
-				}), white,
+				}),
 			},
 			-665,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := evaluateBoard(tt.args.b, tt.args.colour); got != tt.want {
+			if got := evaluateBoard(tt.args.b); got != tt.want {
 				t.Errorf("evaluateBoard() = %v, want %v", got, tt.want)
 			}
 		})

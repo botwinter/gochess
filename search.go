@@ -4,7 +4,7 @@ package main
 with alpha beta pruning */
 func search(b *board, depth int, origDepth int, colour int, alpha int, beta int, bestMove *move, moveStack *[]move, movesProcessed int) int {
 	if depth == 0 {
-		return evaluateBoard(b, colour)
+		return evaluateBoard(b) * colour
 	}
 
 	score := 0

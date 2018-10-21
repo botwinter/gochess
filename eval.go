@@ -82,106 +82,59 @@ var blackRookEvalTable = reverseBoardArray(whiteRookEvalTable)
 var blackQueenEvalTable = reverseBoardArray(whiteQueenEvalTable)
 var blackKingEvalTable = reverseBoardArray(whiteKingEvalTable)
 
-/* This is a slightly less basic material + position evaluation */
-func evaluateBoard(b *board, colour int) int {
+/* This function always evaluates from the PoV of white. It is up to the caller to
+reverse it for black */
+func evaluateBoard(b *board) int {
 	score := 0
 
 	for x, col := range b.squares {
 		for y, sq := range col {
 			if sq == whiteKing {
-				if colour == white {
-					score += (kingWeight + whiteKingEvalTable[x][y])
-				} else {
-					score -= (kingWeight + whiteKingEvalTable[x][y])
-				}
+				score += (kingWeight + whiteKingEvalTable[x][y])
 			}
 
 			if sq == blackKing {
-				if colour == black {
-					score += (kingWeight + blackKingEvalTable[x][y])
-				} else {
-					score -= (kingWeight + blackKingEvalTable[x][y])
-				}
+				score -= (kingWeight + blackKingEvalTable[x][y])
 			}
 
 			if sq == whiteQueen {
-				if colour == white {
-					score += (queenWeight + whiteQueenEvalTable[x][y])
-				} else {
-					score -= (queenWeight + whiteQueenEvalTable[x][y])
-				}
+				score += (queenWeight + whiteQueenEvalTable[x][y])
 			}
 
 			if sq == blackQueen {
-				if colour == black {
-					score += (queenWeight + blackQueenEvalTable[x][y])
-				} else {
-					score -= (queenWeight + blackQueenEvalTable[x][y])
-				}
+				score -= (queenWeight + blackQueenEvalTable[x][y])
 			}
 
 			if sq == whiteRook {
-				if colour == white {
-					score += (rookWeight + whiteRookEvalTable[x][y])
-				} else {
-					score -= (rookWeight + whiteRookEvalTable[x][y])
-				}
+				score += (rookWeight + whiteRookEvalTable[x][y])
 			}
 
 			if sq == blackRook {
-				if colour == black {
-					score += (rookWeight + blackRookEvalTable[x][y])
-				} else {
-					score -= (rookWeight + blackRookEvalTable[x][y])
-				}
+				score -= (rookWeight + blackRookEvalTable[x][y])
 			}
 
 			if sq == whiteBishop {
-				if colour == white {
-					score += (bishopWeight + whiteBishopEvalTable[x][y])
-				} else {
-					score -= (bishopWeight + whiteBishopEvalTable[x][y])
-				}
+				score += (bishopWeight + whiteBishopEvalTable[x][y])
 			}
 
 			if sq == blackBishop {
-				if colour == black {
-					score += (bishopWeight + blackBishopEvalTable[x][y])
-				} else {
-					score -= (bishopWeight + blackBishopEvalTable[x][y])
-				}
+				score -= (bishopWeight + blackBishopEvalTable[x][y])
 			}
 
 			if sq == whiteKnight {
-				if colour == white {
-					score += (knightWeight + whiteKnightEvalTable[x][y])
-				} else {
-					score -= (knightWeight + whiteKnightEvalTable[x][y])
-				}
+				score += (knightWeight + whiteKnightEvalTable[x][y])
 			}
 
 			if sq == blackKnight {
-				if colour == black {
-					score += (knightWeight + blackKnightEvalTable[x][y])
-				} else {
-					score -= (knightWeight + blackKnightEvalTable[x][y])
-				}
+				score -= (knightWeight + blackKnightEvalTable[x][y])
 			}
 
 			if sq == whitePawn {
-				if colour == white {
-					score += (pawnWeight + whitePawnEvalTable[x][y])
-				} else {
-					score -= (pawnWeight + whitePawnEvalTable[x][y])
-				}
+				score += (pawnWeight + whitePawnEvalTable[x][y])
 			}
 
 			if sq == blackPawn {
-				if colour == black {
-					score += (pawnWeight + blackPawnEvalTable[x][y])
-				} else {
-					score -= (pawnWeight + blackPawnEvalTable[x][y])
-				}
+				score -= (pawnWeight + blackPawnEvalTable[x][y])
 			}
 		}
 	}
