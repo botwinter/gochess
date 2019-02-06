@@ -13,8 +13,7 @@ const (
 
 type board struct {
 	squares [][]int
-
-	flags uint64
+	flags   uint64
 }
 
 func newBoard() *board {
