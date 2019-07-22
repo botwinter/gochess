@@ -21,7 +21,7 @@ func Test_generatePawnMoves(t *testing.T) {
 		{
 			"test piece in way",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, blackQueen, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -37,7 +37,7 @@ func Test_generatePawnMoves(t *testing.T) {
 		{
 			"test initial state",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -56,7 +56,7 @@ func Test_generatePawnMoves(t *testing.T) {
 		{
 			"test take",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -76,7 +76,7 @@ func Test_generatePawnMoves(t *testing.T) {
 		{
 			"test take in king diagonal",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -94,7 +94,7 @@ func Test_generatePawnMoves(t *testing.T) {
 		{
 			"test promotions",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, whitePawn, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -138,7 +138,7 @@ func Test_generateRookMoves(t *testing.T) {
 		{
 			"test basic",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, blackPawn, empty, empty, empty, empty},
 					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
@@ -160,7 +160,7 @@ func Test_generateRookMoves(t *testing.T) {
 		{
 			"test basic 2",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, blackPawn, empty, empty, empty, empty},
 					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
@@ -185,7 +185,7 @@ func Test_generateRookMoves(t *testing.T) {
 		{
 			"test queen on row",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, blackPawn, empty, empty, empty, empty},
 					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
@@ -228,7 +228,7 @@ func Test_generateKnightMoves(t *testing.T) {
 		{
 			"test basic",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -250,7 +250,7 @@ func Test_generateKnightMoves(t *testing.T) {
 		{
 			"test bounds",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteKnight, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -269,7 +269,7 @@ func Test_generateKnightMoves(t *testing.T) {
 		{
 			"test rook on row",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{blackRook, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -285,7 +285,7 @@ func Test_generateKnightMoves(t *testing.T) {
 		{
 			"test queen on col",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -301,7 +301,7 @@ func Test_generateKnightMoves(t *testing.T) {
 		{
 			"test bishop on diag",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{whiteBishop, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -340,7 +340,7 @@ func Test_generateBishopMoves(t *testing.T) {
 		{
 			"test basic",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -363,7 +363,7 @@ func Test_generateBishopMoves(t *testing.T) {
 		{
 			"test rook on col",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -379,7 +379,7 @@ func Test_generateBishopMoves(t *testing.T) {
 		{
 			"test queen on diag",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, blackPawn, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -421,7 +421,7 @@ func Test_generateQueenMoves(t *testing.T) {
 		{
 			"test basic",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, whitePawn, empty, whiteQueen, empty, empty, blackPawn, empty},
@@ -456,7 +456,7 @@ func Test_generateQueenMoves(t *testing.T) {
 		{
 			"test rook on row",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -475,7 +475,7 @@ func Test_generateQueenMoves(t *testing.T) {
 		{
 			"test bishop on diag",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, blackBishop},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, blackBishop, empty, whiteQueen, empty, empty},
@@ -523,7 +523,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test basic",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -548,7 +548,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test bishop on diag",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, blackBishop, empty, empty, empty, empty, empty, empty},
@@ -571,7 +571,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test rook on row",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -596,7 +596,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test queen on col",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -621,7 +621,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test knight",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -646,7 +646,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test pawns",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -671,7 +671,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test other king",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -696,7 +696,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test white castle",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -720,7 +720,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test black castle",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -744,7 +744,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test castle through check",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -765,7 +765,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test castle through check 2",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, whiteKnight, empty, empty},
@@ -786,7 +786,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test castle if king has moved",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -808,7 +808,7 @@ func Test_generateKingMoves(t *testing.T) {
 		{
 			"test castle if rook taken",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, whiteBishop},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -851,7 +851,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test empty",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -867,7 +867,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test queen",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -883,7 +883,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test queen blocked",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -899,7 +899,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test bishop",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, whiteBishop, empty, empty, empty},
@@ -915,7 +915,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test bishop blocked",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, whiteBishop, empty, empty, empty},
@@ -931,7 +931,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test knight",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, blackKnight, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -947,7 +947,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test knight adjacent",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, blackKnight, empty, empty, empty, empty, empty},
 					[]int{empty, empty, whiteKing, empty, empty, empty, empty, empty},
@@ -963,7 +963,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test rook",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -979,7 +979,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test rook blocked",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -995,7 +995,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test pawn",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1011,7 +1011,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test pawn in front",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1027,7 +1027,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test pawn behind",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1043,7 +1043,7 @@ func Test_inCheck(t *testing.T) {
 		{
 			"test other king",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1079,7 +1079,7 @@ func Test_generateAllLegalMovesInCheck(t *testing.T) {
 		{
 			"test basic",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1102,7 +1102,7 @@ func Test_generateAllLegalMovesInCheck(t *testing.T) {
 		{
 			"test queen and rook",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, blackRook, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1123,7 +1123,7 @@ func Test_generateAllLegalMovesInCheck(t *testing.T) {
 		{
 			"test checkmate",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, blackQueen, empty, empty, empty, empty, empty, empty},
 					[]int{empty, blackRook, empty, empty, empty, empty, empty, empty},
@@ -1139,7 +1139,7 @@ func Test_generateAllLegalMovesInCheck(t *testing.T) {
 		{
 			"test bishop",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, blackBishop, empty, empty, empty},
@@ -1162,7 +1162,7 @@ func Test_generateAllLegalMovesInCheck(t *testing.T) {
 		{
 			"test bishop adjacent",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -1186,7 +1186,7 @@ func Test_generateAllLegalMovesInCheck(t *testing.T) {
 		{
 			"test multiple pieces taking checking piece",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, whiteKnight, empty, empty, empty, empty, empty, empty},
 					[]int{empty, whiteRook, empty, blackKnight, empty, empty, empty, empty},

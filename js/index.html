@@ -39,7 +39,7 @@
 
         document.getElementById("btn1").onclick = function () {
             board = ChessBoard('board', boardCfg);
-            ws.send("new");
+            ws.send("ucinewgame");
             return false;
         };
     };

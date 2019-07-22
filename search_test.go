@@ -18,7 +18,7 @@ func Test_findBestMove(t *testing.T) {
 		{
 			"test basic queen taking queen",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -34,7 +34,7 @@ func Test_findBestMove(t *testing.T) {
 		{
 			"test basic queen taking king",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, whiteQueen, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -50,7 +50,7 @@ func Test_findBestMove(t *testing.T) {
 		{
 			"test 4 move checkmate",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, empty},
 					[]int{whiteBishop, whitePawn, empty, whiteBishop, blackBishop, blackKnight, blackPawn, blackBishop},
@@ -66,7 +66,7 @@ func Test_findBestMove(t *testing.T) {
 		{
 			"test queens and kings",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, whiteQueen, empty, empty, empty, empty, empty, empty},
@@ -82,7 +82,7 @@ func Test_findBestMove(t *testing.T) {
 		{
 			"test mate in one (1)",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, whitePawn, empty, empty, blackPawn, empty, blackRook},
 					[]int{empty, whiteBishop, empty, empty, empty, blackPawn, blackPawn, empty},
 					[]int{empty, whiteQueen, empty, whitePawn, blackPawn, blackKnight, empty, empty},
@@ -98,7 +98,7 @@ func Test_findBestMove(t *testing.T) {
 		{
 			"test pawn promotion to queen",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, whitePawn, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},

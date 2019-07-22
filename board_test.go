@@ -21,7 +21,7 @@ func Test_isEnemyOnDiagonal(t *testing.T) {
 		{
 			"test Queen on diagonal",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, blackQueen, empty},
@@ -37,7 +37,7 @@ func Test_isEnemyOnDiagonal(t *testing.T) {
 		{
 			"test Rook on diagonal",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, blackRook, empty},
@@ -53,7 +53,7 @@ func Test_isEnemyOnDiagonal(t *testing.T) {
 		{
 			"test another piece in way",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, blackQueen},
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, empty},
@@ -69,7 +69,7 @@ func Test_isEnemyOnDiagonal(t *testing.T) {
 		{
 			"test bishop",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -108,7 +108,7 @@ func Test_isEnemyInDirection(t *testing.T) {
 		{
 			"test Queen left",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, blackQueen, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -124,7 +124,7 @@ func Test_isEnemyInDirection(t *testing.T) {
 		{
 			"test Rook up",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -140,7 +140,7 @@ func Test_isEnemyInDirection(t *testing.T) {
 		{
 			"test Rook left with other piece in way",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -176,7 +176,7 @@ func Test_makeMove(t *testing.T) {
 		{
 			"test simple",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -186,7 +186,7 @@ func Test_makeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), &move{3, 1, 3, 2, empty, 0, 0},
-			}, newBoardWithPieces([][]int{
+			}, newBoardFromCoords([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -200,7 +200,7 @@ func Test_makeMove(t *testing.T) {
 		{
 			"test take",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -210,7 +210,7 @@ func Test_makeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), &move{3, 1, 5, 1, empty, 0, 0},
-			}, newBoardWithPieces([][]int{
+			}, newBoardFromCoords([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -224,7 +224,7 @@ func Test_makeMove(t *testing.T) {
 		{
 			"test castle king side",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -243,12 +243,12 @@ func Test_makeMove(t *testing.T) {
 				[]int{whiteRook, empty, empty, empty, empty, empty, empty, empty},
 				[]int{whiteKing, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, blackRook},
-			}, whiteKingMoved | whiteRookKingSideMoved},
+			}, whiteKingMoved | whiteRookKingSideMoved, white},
 		},
 		{
 			"test castle queen side",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -267,12 +267,12 @@ func Test_makeMove(t *testing.T) {
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
-			}, blackKingMoved | blackRookQueenSideMoved},
+			}, blackKingMoved | blackRookQueenSideMoved, white},
 		},
 		{
 			"test pawn promotion",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, whitePawn, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -291,7 +291,7 @@ func Test_makeMove(t *testing.T) {
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
-			}, 0},
+			}, 0, white},
 		},
 	}
 	for _, tt := range tests {
@@ -316,7 +316,7 @@ func Test_unmakeMove(t *testing.T) {
 		{
 			"test simple",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -326,7 +326,7 @@ func Test_unmakeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), &move{3, 1, 3, 2, empty, 0, 0},
-			}, newBoardWithPieces([][]int{
+			}, newBoardFromCoords([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -340,7 +340,7 @@ func Test_unmakeMove(t *testing.T) {
 		{
 			"test take",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -350,7 +350,7 @@ func Test_unmakeMove(t *testing.T) {
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				}), &move{1, 0, 3, 2, whiteBishop, 0, 0},
-			}, newBoardWithPieces([][]int{
+			}, newBoardFromCoords([][]int{
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{blackQueen, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -364,7 +364,7 @@ func Test_unmakeMove(t *testing.T) {
 		{
 			"test castle king side",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -383,12 +383,12 @@ func Test_unmakeMove(t *testing.T) {
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
-			}, 0},
+			}, 0, white},
 		},
 		{
 			"test castle queen side",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, empty, blackKing},
@@ -407,12 +407,12 @@ func Test_unmakeMove(t *testing.T) {
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
-			}, 0},
+			}, 0, white},
 		},
 		{
 			"test pawn promotion",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 					[]int{blackRook, empty, empty, empty, empty, empty, empty, empty},
@@ -431,7 +431,7 @@ func Test_unmakeMove(t *testing.T) {
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 				[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
-			}, 0},
+			}, 0, white},
 		},
 	}
 	for _, tt := range tests {
@@ -444,7 +444,7 @@ func Test_unmakeMove(t *testing.T) {
 }
 
 func Test_makeThenUnmake(t *testing.T) {
-	b := newBoardWithPieces([][]int{
+	b := newBoardFromCoords([][]int{
 		[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
 		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
@@ -464,7 +464,7 @@ func Test_makeThenUnmake(t *testing.T) {
 		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 		[]int{empty, empty, empty, empty, empty, empty, empty, empty},
 		[]int{whiteRook, empty, empty, empty, empty, empty, empty, blackRook},
-	}, 0}
+	}, 0, white}
 
 	m := move{4, 0, 6, 0, empty, kingCastle, 0}
 	t.Run("test make then unmake castle", func(t *testing.T) {

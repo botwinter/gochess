@@ -1,90 +1,111 @@
 package main
 
+import "strings"
+
+// Board flags
 const (
-	// Castling flags
+	// Castling flags - TODO still need?
 	whiteRookKingSideMoved = 1 << iota
 	whiteRookQueenSideMoved
 	whiteKingMoved
 	blackRookKingSideMoved
 	blackRookQueenSideMoved
 	blackKingMoved
+
+	// Fen flags
+	whiteCanCastleKingSide
+	whiteCanCastleQueenSide
+	blackCanCastleKingSide
+	blackCanCastleQueenSide
+
 	numBoardFlags
 )
 
 type board struct {
-	squares [][]int
-	flags   uint64
+	squares      [][]int
+	flags        uint64
+	colourToMove int
 }
 
 func newBoard() *board {
-	b := board{}
-
-	return &b
+	return &board{}
 }
 
-func newBoardWithPieces(pieces [][]int) *board {
-	b := board{pieces, 0}
-
-	// Set flags based on piece layout
-	if b.squares[0][0] != whiteRook {
-		b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
-	}
-	if b.squares[4][0] != whiteKing {
-		b.flags = setFlag(b.flags, whiteKingMoved)
-	}
-	if b.squares[7][0] != whiteRook {
-		b.flags = setFlag(b.flags, whiteRookKingSideMoved)
-	}
-	if b.squares[0][7] != blackRook {
-		b.flags = setFlag(b.flags, blackRookQueenSideMoved)
-	}
-	if b.squares[4][7] != blackKing {
-		b.flags = setFlag(b.flags, blackKingMoved)
-	}
-	if b.squares[7][7] != blackRook {
-		b.flags = setFlag(b.flags, blackRookKingSideMoved)
-	}
-
-	return &b
+func newBoardFromCoords(pieces [][]int) *board {
+	return &board{pieces, 0, 0}
 }
 
-func newBoardWithPiecesAndFlags(pieces [][]int, flags uint64) *board {
-	b := board{pieces, flags}
+func newBoardFromFen(fen string) *board {
+	b := newBoard()
 
-	// Set flags based on piece layout
-	if b.squares[0][0] != whiteRook {
-		b.flags = setFlag(b.flags, whiteRookQueenSideMoved)
-	}
-	if b.squares[4][0] != whiteKing {
-		b.flags = setFlag(b.flags, whiteKingMoved)
-	}
-	if b.squares[7][0] != whiteRook {
-		b.flags = setFlag(b.flags, whiteRookKingSideMoved)
-	}
-	if b.squares[0][7] != blackRook {
-		b.flags = setFlag(b.flags, blackRookQueenSideMoved)
-	}
-	if b.squares[4][7] != blackKing {
-		b.flags = setFlag(b.flags, blackKingMoved)
-	}
-	if b.squares[7][7] != blackRook {
-		b.flags = setFlag(b.flags, blackRookKingSideMoved)
+	fenFields := strings.Split(fen, " ")
+
+	fenPieces := strings.Split(fenFields[0], "/")
+	fenActiveColour := fenFields[1]
+	fenCastling := fenFields[2]
+	//fenEnPassant := fenFields[3]
+	//fenHalfMoveClock := fenFields[4]
+	//fenFullMoveNo := fenFields[5]
+
+	// First, populate board based on pieces
+	for row, pieces := range fenPieces {
+		for col, piece := range pieces {
+			if piece == 'P' {
+				b.squares[row][col] = whitePawn
+			} else if piece == 'B' {
+				b.squares[row][col] = whiteBishop
+			} else if piece == 'N' {
+				b.squares[row][col] = whiteKnight
+			} else if piece == 'R' {
+				b.squares[row][col] = whiteRook
+			} else if piece == 'Q' {
+				b.squares[row][col] = whiteQueen
+			} else if piece == 'K' {
+				b.squares[row][col] = whiteKing
+			} else if piece == 'p' {
+				b.squares[row][col] = blackPawn
+			} else if piece == 'b' {
+				b.squares[row][col] = blackBishop
+			} else if piece == 'n' {
+				b.squares[row][col] = blackKnight
+			} else if piece == 'r' {
+				b.squares[row][col] = blackRook
+			} else if piece == 'q' {
+				b.squares[row][col] = blackQueen
+			} else if piece == 'k' {
+				b.squares[row][col] = blackKing
+			}
+		}
 	}
 
-	return &b
+	// Set active colour
+	if fenActiveColour == "w" {
+		b.colourToMove = white
+	} else {
+		b.colourToMove = black
+	}
+
+	// Set castling flags
+	for _, flag := range fenCastling {
+		if flag == 'K' {
+			b.flags = setFlag(b.flags, whiteCanCastleKingSide)
+		} else if flag == 'Q' {
+			b.flags = setFlag(b.flags, whiteCanCastleQueenSide)
+		} else if flag == 'k' {
+			b.flags = setFlag(b.flags, blackCanCastleKingSide)
+		} else if flag == 'q' {
+			b.flags = setFlag(b.flags, blackCanCastleQueenSide)
+		}
+	}
+
+	// TODO half move clock
+	// TODO full move number
+
+	return b
 }
 
 func newDefaultBoard() *board {
-	return newBoardWithPieces([][]int{
-		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
-		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
-		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
-		[]int{whiteQueen, whitePawn, empty, empty, empty, empty, blackPawn, blackQueen},
-		[]int{whiteKing, whitePawn, empty, empty, empty, empty, blackPawn, blackKing},
-		[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
-		[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
-		[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
-	})
+	return newBoardFromFen(startPositionFen)
 }
 
 /* This function looks along a specified diagonal, and returns true if the current piece is the only

@@ -14,7 +14,7 @@ func Test_evaluateBoard(t *testing.T) {
 		{
 			"test starting pos",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, blackPawn, blackKnight},
 					[]int{whiteBishop, whitePawn, empty, empty, empty, empty, blackPawn, blackBishop},
@@ -30,7 +30,7 @@ func Test_evaluateBoard(t *testing.T) {
 		{
 			"test white taken all",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, empty, empty},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, empty, empty},
 					[]int{whiteBishop, whitePawn, empty, empty, empty, empty, empty, empty},
@@ -46,7 +46,7 @@ func Test_evaluateBoard(t *testing.T) {
 		{
 			"test black taken all",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackRook},
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackKnight},
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackBishop},
@@ -62,7 +62,7 @@ func Test_evaluateBoard(t *testing.T) {
 		{
 			"test mix",
 			args{
-				newBoardWithPieces([][]int{
+				newBoardFromCoords([][]int{
 					[]int{whiteRook, whitePawn, empty, empty, empty, empty, blackPawn, blackRook},
 					[]int{whiteKnight, whitePawn, empty, empty, empty, empty, empty, empty},
 					[]int{empty, empty, empty, empty, empty, empty, blackPawn, blackBishop},
