@@ -54,11 +54,9 @@ func serveWs(server *server, w http.ResponseWriter, r *http.Request) {
 func startServer(server *server) {
 	// Serve static files
 	http.Handle("/", http.FileServer(http.Dir("./js")))
-
 	// Handle requests from client
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(server, w, r)
 	})
-
 	http.ListenAndServe(":8080", nil)
 }

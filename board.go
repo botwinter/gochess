@@ -1,6 +1,7 @@
 package main
 
 import "strings"
+import "unicode"
 
 // Board flags
 const (
@@ -28,7 +29,18 @@ type board struct {
 }
 
 func newBoard() *board {
-	return &board{}
+	return &board{
+		squares: [][]int{
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+		},
+	}
 }
 
 func newBoardFromCoords(pieces [][]int) *board {
@@ -48,32 +60,51 @@ func newBoardFromFen(fen string) *board {
 	//fenFullMoveNo := fenFields[5]
 
 	// First, populate board based on pieces
-	for row, pieces := range fenPieces {
-		for col, piece := range pieces {
-			if piece == 'P' {
-				b.squares[row][col] = whitePawn
-			} else if piece == 'B' {
-				b.squares[row][col] = whiteBishop
-			} else if piece == 'N' {
-				b.squares[row][col] = whiteKnight
-			} else if piece == 'R' {
-				b.squares[row][col] = whiteRook
-			} else if piece == 'Q' {
-				b.squares[row][col] = whiteQueen
-			} else if piece == 'K' {
-				b.squares[row][col] = whiteKing
-			} else if piece == 'p' {
-				b.squares[row][col] = blackPawn
-			} else if piece == 'b' {
-				b.squares[row][col] = blackBishop
-			} else if piece == 'n' {
-				b.squares[row][col] = blackKnight
-			} else if piece == 'r' {
-				b.squares[row][col] = blackRook
-			} else if piece == 'q' {
-				b.squares[row][col] = blackQueen
-			} else if piece == 'k' {
-				b.squares[row][col] = blackKing
+	for rowNum, row := range fenPieces {
+		for _, fenValue := range row {
+			colIdx := 0
+			if fenValue == 'P' {
+				b.squares[rowNum][colIdx] = whitePawn
+				colIdx++
+			} else if fenValue == 'B' {
+				b.squares[rowNum][colIdx] = whiteBishop
+				colIdx++
+			} else if fenValue == 'N' {
+				b.squares[rowNum][colIdx] = whiteKnight
+				colIdx++
+			} else if fenValue == 'R' {
+				b.squares[rowNum][colIdx] = whiteRook
+				colIdx++
+			} else if fenValue == 'Q' {
+				b.squares[rowNum][colIdx] = whiteQueen
+				colIdx++
+			} else if fenValue == 'K' {
+				b.squares[rowNum][colIdx] = whiteKing
+				colIdx++
+			} else if fenValue == 'p' {
+				b.squares[rowNum][colIdx] = blackPawn
+				colIdx++
+			} else if fenValue == 'b' {
+				b.squares[rowNum][colIdx] = blackBishop
+				colIdx++
+			} else if fenValue == 'n' {
+				b.squares[rowNum][colIdx] = blackKnight
+				colIdx++
+			} else if fenValue == 'r' {
+				b.squares[rowNum][colIdx] = blackRook
+				colIdx++
+			} else if fenValue == 'q' {
+				b.squares[rowNum][colIdx] = blackQueen
+				colIdx++
+			} else if fenValue == 'k' {
+				b.squares[rowNum][colIdx] = blackKing
+				colIdx++
+			} else if unicode.IsNumber(fenValue) {
+				number := int(fenValue - '0')
+				for i := colIdx; i < number; i++ {
+					b.squares[rowNum][i] = empty
+					colIdx++
+				}
 			}
 		}
 	}

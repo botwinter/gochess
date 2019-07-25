@@ -493,3 +493,38 @@ func Test_makeThenUnmake(t *testing.T) {
 		}
 	})
 }
+
+func Test_newBoardFromFen(t *testing.T) {
+	type args struct {
+		fen string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *board
+	}{
+		{
+			"test Start position",
+			args{
+				"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+			},
+			newBoardFromCoords([][]int{
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, blackQueen, empty},
+				[]int{empty, empty, empty, empty, empty, whitePawn, empty, empty},
+				[]int{empty, empty, empty, empty, whiteKing, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+				[]int{empty, empty, empty, empty, empty, empty, empty, empty},
+			}),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := newBoardFromFen(tt.args.fen); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("newBoardFromFen() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
