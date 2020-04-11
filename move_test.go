@@ -72,6 +72,17 @@ func Test_generatePawnMoves(t *testing.T) {
 				move{1, 6, 1, 7, empty, bishopPromotion, 0},
 			},
 		},
+		{
+			"test move two",
+			args{
+				newBoardFromFen("rnbqkbnr/pppppppp/8/3p4/4P3/5P2/PPPP2PP/RNBQKBNR b KQkq - 0 1"),
+				[2]int{3, 4}, [2]int{4, 7}, black, []move{},
+			},
+			[]move{
+				move{3, 4, 3, 3, empty, 0, 0},
+				move{3, 4, 4, 3, empty, 0, 0},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

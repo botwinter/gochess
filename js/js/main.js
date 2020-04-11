@@ -3,6 +3,7 @@ var game = new Chess()
 var $status = $('#status')
 var $fen = $('#fen')
 var $pgn = $('#pgn')
+var ws = null;
 
 function onDragStart (source, piece, position, orientation) {
   // do not pick up pieces if the game is over
@@ -32,7 +33,15 @@ function onDrop (source, target) {
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 function onSnapEnd () {
-  board.position(game.fen())
+  let fen = game.fen();
+  board.position(fen)
+  msg = "position " + fen;
+  console.log(msg);
+  ws.send(msg);
+
+  msg = "go infinite";
+  console.log(msg);
+  ws.send(msg);
 }
 
 function updateStatus () {
@@ -77,9 +86,28 @@ function init() {
     onSnapEnd: onSnapEnd
     }
 
-    var ws = new WebSocket("ws://" + document.location.host + "/ws");
+    ws = new WebSocket("ws://" + document.location.host + "/ws");
     ws.onmessage = function (evt) {
         console.log(evt.data);
+        let split = evt.data.split(" ");
+        if (split[0] === "bestmove") {
+          let move = split[1];
+          let from = move.substr(0,2);
+          let to = move.substr(2,2);
+
+          // see if the move is legal
+          if (game.move({
+            from: from,
+            to: to,
+            promotion: 'q' // TODO: always promote to a queen for example simplicity
+          }) === null) {
+            return 'snapback';
+          }
+
+          board.position(game.fen());
+
+          updateStatus();
+        }
     };
 
     board = Chessboard('myBoard', config)

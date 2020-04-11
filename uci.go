@@ -37,23 +37,22 @@ func handleUCINewGame(engine *engine) int {
 	return 0
 }
 
-func handleUCIPosition(engine *engine, cmd []string) int {
+func handleUCIPosition(engine *engine, position string) int {
+	split := strings.Split(position, "moves")
 	// Next should either be "startpos" or "fen"
-	position := cmd[1]
 	fen := ""
-	if position == "startpos" {
+	if strings.HasPrefix(split[0], "startpos") {
 		fen = startPositionFen
 	} else {
-		fen = strings.Join(cmd[1:7], "") // FEN string has 6 space-separated fields
+		fen = split[0]
 	}
 
 	// Setup position
 	engine.board = newBoardFromFen(fen)
 
 	// Make moves
-	moveIdx := findTokenIndex(cmd, "moves")
-	for _, moveStr := range cmd[moveIdx+1:] {
-		move := uciNotationToMove(moveStr)
+	for i := 1; i < len(split); i++ {
+		move := uciNotationToMove(split[i])
 		makeMove(engine.board, &move)
 	}
 
@@ -64,11 +63,11 @@ func handleUCIGo(engine *engine) {
 	// Find move
 	bestAIMove := findBestMove(engine.board, black)
 	makeMove(engine.board, &bestAIMove)
-	fmt.Println(bestAIMove.toString())
 
 	// Format move and pass to response channel to send to client
-	ret := fmt.Sprintf("ai_move %s%s %s%s", string(bestAIMove.fromX+97), string(bestAIMove.fromY+49), string(bestAIMove.toX+97), string(bestAIMove.toY+49))
+	ret := fmt.Sprintf("bestmove %s%s%s%s", string(bestAIMove.fromX+97), string(bestAIMove.fromY+49), string(bestAIMove.toX+97), string(bestAIMove.toY+49))
 	handleUCIResponse(engine, ret)
+	prettyPrintBoard(engine.board)
 }
 
 func handleUCIResponse(engine *engine, msg string) int {
@@ -77,31 +76,30 @@ func handleUCIResponse(engine *engine, msg string) int {
 }
 
 func handleUCICommand(engine *engine, msg string) int {
-	split := strings.Split(msg, " ")
-	cmd := split[0]
-
-	switch cmd {
-	case "uci":
-		// Do nothing
-	case "debug":
+	switch {
+	case strings.HasPrefix(msg, "uci"):
+		if strings.HasPrefix(msg, "ucinewgame") {
+			handleUCINewGame(engine)
+		} else {
+			// Do nothing
+		}
+	case strings.HasPrefix(msg, "debug"):
 		// TODO
-	case "isready":
+	case strings.HasPrefix(msg, "isready"):
 		// TODO
-	case "setoption":
+	case strings.HasPrefix(msg, "setoption"):
 		// TODO
-	case "register":
+	case strings.HasPrefix(msg, "register"):
 		// TODO
-	case "ucinewgame":
-		handleUCINewGame(engine)
-	case "position":
-		handleUCIPosition(engine, split)
-	case "go":
+	case strings.HasPrefix(msg, "position"):
+		handleUCIPosition(engine, msg[9:])
+	case strings.HasPrefix(msg, "go"):
 		handleUCIGo(engine)
-	case "stop":
+	case strings.HasPrefix(msg, "stop"):
 		// TODO
-	case "ponderhit":
+	case strings.HasPrefix(msg, "ponderhit"):
 		// TODO
-	case "quit":
+	case strings.HasPrefix(msg, "uci"):
 		// TODO
 	}
 

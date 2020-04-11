@@ -25,7 +25,7 @@ func readFromConnection(readChan chan string, conn *websocket.Conn) {
 			fmt.Println("read:", err)
 			break
 		}
-		fmt.Printf("recv: %s", string(msg))
+		fmt.Printf("recv: %s\n", string(msg))
 		readChan <- string(msg)
 	}
 }
@@ -41,13 +41,17 @@ func serveWs(server *server, w http.ResponseWriter, r *http.Request) {
 	readChan := make(chan (string))
 	go readFromConnection(readChan, c)
 
-	for {
-		select {
-		case msg := <-readChan:
-			handleUCICommand(server.engine, msg)
-		case msg := <-server.responseChan:
+	go func() {
+		for {
+			msg := <-server.responseChan
+			fmt.Printf("send: %s\n", msg)
 			c.WriteMessage(websocket.TextMessage, []byte(msg))
 		}
+	}()
+
+	for {
+		msg := <-readChan
+		handleUCICommand(server.engine, msg)
 	}
 }
 

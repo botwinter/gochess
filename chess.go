@@ -11,10 +11,15 @@ type engine struct {
 var searchDepth = 5
 
 func main() {
-	mainEngine := engine{}
-	mainServer := server{}
+	mainServer := server{
+		responseChan: make(chan string),
+	}
+	mainEngine := engine{
+		board:  newDefaultBoard(),
+		server: &mainServer,
+	}
+
 	mainServer.engine = &mainEngine
-	mainEngine.server = &mainServer
 
 	// Set deeper search depth for real game
 	searchDepth = 6

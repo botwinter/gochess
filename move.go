@@ -86,6 +86,10 @@ func generatePawnMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int,
 
 			// 2 squares
 			if toY-fromY == 2 || toY-fromY == -2 {
+				if colour == white && fromY != 1 || colour == black && fromY != 6 {
+					continue
+				}
+
 				if b.squares[toX][toY] != empty {
 					continue
 				}
