@@ -44,22 +44,16 @@ func hashPos(b *board) uint64 {
 	}
 
 	// Hash board flags
-	if hasFlag(b.flags, whiteRookKingSideMoved) {
+	if hasFlag(b.flags, whiteCanCastleKingSide) {
 		hash ^= boardFlagNumbers[0]
 	}
-	if hasFlag(b.flags, whiteRookQueenSideMoved) {
+	if hasFlag(b.flags, whiteCanCastleQueenSide) {
 		hash ^= boardFlagNumbers[0]
 	}
-	if hasFlag(b.flags, whiteKingMoved) {
+	if hasFlag(b.flags, blackCanCastleKingSide) {
 		hash ^= boardFlagNumbers[0]
 	}
-	if hasFlag(b.flags, blackRookKingSideMoved) {
-		hash ^= boardFlagNumbers[0]
-	}
-	if hasFlag(b.flags, blackRookQueenSideMoved) {
-		hash ^= boardFlagNumbers[0]
-	}
-	if hasFlag(b.flags, blackKingMoved) {
+	if hasFlag(b.flags, blackCanCastleQueenSide) {
 		hash ^= boardFlagNumbers[0]
 	}
 

@@ -787,7 +787,8 @@ func generateQueenMoves(b *board, myCoords [2]int, kingCoords [2]int, colour int
 	return moves
 }
 
-/* This function returns 2 bools: 1st for castling king side and 2nd for castling queen side.
+/*
+TODO should we instead set the flags after each move?
 Criteria for castling:
 - King has not have moved yet
 - Castling rook has not moved yet
@@ -795,98 +796,101 @@ Criteria for castling:
 - Can not castle if we're in check
 - Can not move over a square being attacked
 */
-func canCastle(b *board, kingcoords [2]int, colour int) (bool, bool) {
-	canCastleKingSide := true
-	canCastleQueenSide := true
-
+func canCastleKingSide(b *board, kingcoords [2]int, colour int) bool {
 	yPos := 0
 	if colour == black {
 		yPos = 7
 	}
 
-	// Check for king moved yet
-	if colour == white && b.flags&whiteKingMoved != 0 || colour == black && b.flags&blackKingMoved != 0 {
-		return false, false
-	}
-
-	// Check for rooks moved yet
-	if colour == white && b.flags&whiteRookKingSideMoved != 0 || colour == black && b.flags&blackRookKingSideMoved != 0 {
-		canCastleKingSide = false
-	}
-	if colour == white && b.flags&whiteRookQueenSideMoved != 0 || colour == black && b.flags&blackRookQueenSideMoved != 0 {
-		canCastleQueenSide = false
+	// Check flags
+	if colour == white && !hasFlag(b.flags, whiteCanCastleKingSide) || colour == black && !hasFlag(b.flags, blackCanCastleKingSide) {
+		return false
 	}
 
 	// Check for rooks not taken
-	if colour == white && b.squares[0][yPos] != whiteRook || colour == black && b.squares[0][yPos] != blackRook {
-		canCastleQueenSide = false
-	}
 	if colour == white && b.squares[7][yPos] != whiteRook || colour == black && b.squares[7][yPos] != blackRook {
-		canCastleKingSide = false
+		return false
 	}
 
 	// Check for pieces between king and castling rook
-	if b.squares[1][yPos] != empty || b.squares[2][yPos] != empty || b.squares[3][yPos] != empty {
-		canCastleQueenSide = false
-	}
-
 	if b.squares[5][yPos] != empty || b.squares[6][yPos] != empty {
-		canCastleKingSide = false
-	}
-
-	// The remaining checks are expensive, so check if both bools are false here and return early
-	if !canCastleKingSide && !canCastleQueenSide {
-		return false, false
+		return false
 	}
 
 	// Check if we're in check
 	if inCheck(b, colour) {
-		return false, false
+		return false
 	}
 
 	// Check whether king would be moving across attack.
 	// Simplest way is to move the king to each square and run inCheck again.
 	// Note: because the 'king moved' flags aren't set, we can assume that king is
 	// in default position here.
-	if canCastleKingSide {
-		tmpKing := b.squares[4][yPos]
-		b.squares[4][yPos] = empty
+	tmpKing := b.squares[4][yPos]
+	b.squares[4][yPos] = empty
 
-		for x := 5; x < 7; x++ {
-			// Move king from start square
-			b.squares[x][yPos] = tmpKing
+	for x := 5; x < 7; x++ {
+		// Move king from start square
+		b.squares[x][yPos] = tmpKing
 
-			if inCheck(b, colour) {
-				canCastleKingSide = false
-				b.squares[x][yPos] = empty
-				break
-			}
+		if inCheck(b, colour) {
 			b.squares[x][yPos] = empty
+			return false
 		}
-
-		b.squares[4][yPos] = tmpKing
+		b.squares[x][yPos] = empty
 	}
 
-	if canCastleQueenSide {
-		tmpKing := b.squares[4][yPos]
-		b.squares[4][yPos] = empty
+	b.squares[4][yPos] = tmpKing
 
-		for x := 1; x < 4; x++ {
-			// Move king to square
-			b.squares[x][yPos] = tmpKing
+	return true
+}
 
-			if inCheck(b, colour) {
-				canCastleQueenSide = false
-				b.squares[x][yPos] = empty
-				break
-			}
-			b.squares[x][yPos] = empty
-		}
-		// Make sure to put the king back
-		b.squares[4][yPos] = tmpKing
+func canCastleQueenSide(b *board, kingcoords [2]int, colour int) bool {
+	yPos := 0
+	if colour == black {
+		yPos = 7
 	}
 
-	return canCastleKingSide, canCastleQueenSide
+	// Check flags
+	if colour == white && !hasFlag(b.flags, whiteCanCastleQueenSide) || colour == black && !hasFlag(b.flags, blackCanCastleQueenSide) {
+		return false
+	}
+
+	// Check for rooks not taken
+	if colour == white && b.squares[0][yPos] != whiteRook || colour == black && b.squares[0][yPos] != blackRook {
+		return false
+	}
+
+	// Check for pieces between king and castling rook
+	if b.squares[1][yPos] != empty || b.squares[2][yPos] != empty || b.squares[3][yPos] != empty {
+		return false
+	}
+
+	// Check if we're in check
+	if inCheck(b, colour) {
+		return false
+	}
+
+	// Check whether king would be moving across attack.
+	// Simplest way is to move the king to each square and run inCheck again.
+	// Note: we can assume that king is in default position here.
+	tmpKing := b.squares[4][yPos]
+	b.squares[4][yPos] = empty
+
+	for x := 3; x >= 1; x-- {
+		// Move king to square
+		b.squares[x][yPos] = tmpKing
+
+		if inCheck(b, colour) {
+			b.squares[x][yPos] = empty
+			return false
+		}
+		b.squares[x][yPos] = empty
+	}
+	// Make sure to put the king back
+	b.squares[4][yPos] = tmpKing
+
+	return true
 }
 
 func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []move {
@@ -1079,11 +1083,10 @@ func generateKingMoves(b *board, kingCoords [2]int, colour int, moves []move) []
 	}
 
 	/* Check for castleability */
-	canCastleKingSide, canCastleQueenSide := canCastle(b, kingCoords, colour)
-	if canCastleKingSide {
+	if canCastleKingSide(b, kingCoords, colour) {
 		moves = append(moves, move{4, ycoord, 6, ycoord, empty, kingCastle, 0})
 	}
-	if canCastleQueenSide {
+	if canCastleQueenSide(b, kingCoords, colour) {
 		moves = append(moves, move{4, ycoord, 2, ycoord, empty, queenCastle, 0})
 	}
 
